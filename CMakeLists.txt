@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(NodeImageProcessing CXX)
 
 ### OPTIONS ###
-option(NIP_TESTS "Build tests" ON)
+option(NIP_TESTS "Build tests" OFF)
 
 ### imgui ###
 set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/thirdparty/imgui)
@@ -23,8 +23,10 @@ set(IMGUI_SOURCES
 )
 
 ### NodeImageProcessing ###
+include_directories(${CMAKE_SOURCE_DIR}/source)
 set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
+    ${CMAKE_SOURCE_DIR}/source/Window.cpp
 )
 add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES})
 
