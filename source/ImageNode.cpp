@@ -32,7 +32,27 @@ ImageNode::ImageNode(int32_t id)
 
 void ImageNode::draw()
 {
+    // Set style
+    ImNodesStyle& style = ImNodes::GetStyle();
+    style.Colors[ImNodesCol_TitleBar] = IM_COL32(255 * 0.8, 128 * 0.8, 128 * 0.8, 200);
+    style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(255, 128, 128, 200);
+    style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(255, 128, 128, 200);
+
     ImNodes::BeginNode(this->getID());
+    
+    // Title bar
+    ImNodes::BeginNodeTitleBar();
+    ImGui::TextUnformatted("Image");
+    ImNodes::EndNodeTitleBar();
+
+    // Image data
     ImGui::Image((void*)(intptr_t)this->image_data_, ImVec2(100.f, 100.f));
+    
+    // Output pin
+    ImNodes::BeginOutputAttribute(1);
+    ImGui::Indent(75.f);
+    ImGui::Text("RGB");
+    ImNodes::EndOutputAttribute();
+
     ImNodes::EndNode();
 }
