@@ -3,6 +3,12 @@
 #include <cstdint>
 #include <vector>
 
+struct Link
+{
+    int32_t id;
+    int32_t start_attr, end_attr;
+};
+
 class NodeEditor
 {
 public:
@@ -12,8 +18,11 @@ public:
     // Draw node editor and nodes
     void draw();
 
-    // Create new node and add to node list
+    // Create new ImageNode and add to node list
     void newImageNode();
+
+    // Create new BinarizationNode and add to node list
+    void newBinarizationNode();
 
 private:
     // Search for available node ID
@@ -30,4 +39,7 @@ private:
 
     // Using pin id list
     std::vector<int32_t> pin_list_;
+
+    // Connected node pairs
+    std::vector<Link> link_list_;
 };

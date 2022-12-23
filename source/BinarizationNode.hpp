@@ -4,10 +4,10 @@
 
 #include "NodeBase.hpp"
 
-class ImageNode : public NodeBase
+class BinarizationNode : public NodeBase
 {
 public:
-    ImageNode(int32_t id, std::vector<int32_t> pins);
+    BinarizationNode(int32_t id, std::vector<int32_t> pins);
 
     void draw() override;
 

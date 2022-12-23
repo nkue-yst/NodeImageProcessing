@@ -127,10 +127,16 @@ int main(int argc, char **argv)
         {
             if (ImGui::BeginMenu("NewNode"))
             {
-                // Create new node
+                // Create new ImageNode
                 if (ImGui::MenuItem("ImageNode"))
                 {
                     node_editor->newImageNode();
+                }
+
+                // Create new BinariztionNode
+                if (ImGui::MenuItem("BinarizationNode"))
+                {
+                    node_editor->newBinarizationNode();
                 }
 
                 ImGui::EndMenu();

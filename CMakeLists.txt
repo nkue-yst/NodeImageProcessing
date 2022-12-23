@@ -45,6 +45,7 @@ include_directories(${CMAKE_SOURCE_DIR}/thirdparty/stb)
 include_directories(${CMAKE_SOURCE_DIR}/source)
 set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
+    ${CMAKE_SOURCE_DIR}/source/BinarizationNode.cpp
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
 )
