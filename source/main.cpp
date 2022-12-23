@@ -1,8 +1,5 @@
 #include <iostream>
 #include <memory>
-#include <vector>
-
-#include "NodeBase.hpp"
 
 #include <SDL.h>
 
@@ -10,6 +7,9 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_sdlrenderer.h"
 #include "imnodes.h"
+
+#include "NodeBase.hpp"
+#include "NodeEditor.hpp"
 
 int main(int argc, char **argv)
 {
@@ -33,18 +33,17 @@ int main(int argc, char **argv)
     ImGui_ImplSDL2_InitForSDLRenderer(win, renderer);
     ImGui_ImplSDLRenderer_Init(renderer);
 
+    // Initialize Node editor
+    std::unique_ptr<class NodeEditor> node_editor(new NodeEditor());
+    node_editor->init();
+
     // Font settings
     ImGuiIO &io = ImGui::GetIO();
     io.Fonts->Build();
 
     // Set style
     ImGui::StyleColorsDark();
-    ImNodes::StyleColorsDark();
     ImVec4 bg_color = ImVec4(0.4f, 0.4f, 0.4f, 1.f);
-    ImNodes::SetNodeGridSpacePos(1, ImVec2(200.f, 200.f));
-
-    // Node list
-    std::vector<class NodeBase*> node_list;
 
     bool done = false;
     while (!done)
@@ -73,7 +72,7 @@ int main(int argc, char **argv)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        // Begin drawing node and window
+        // Begin drawing window
         ImGui::SetNextWindowSize(ImVec2(win_width, win_height), ImGuiCond_Always);
         ImGui::Begin("NodeImageProcessing", nullptr, ImGuiWindowFlags_MenuBar);
 
@@ -86,9 +85,9 @@ int main(int argc, char **argv)
             if (ImGui::BeginMenu("File"))
             {
                 // Open image file
-                if (ImGui::MenuItem("Open"))
+                if (ImGui::MenuItem("Open image file"))
                 {
-                    std::cout << "Selected \"Open\"" << std::endl;
+                    std::cout << "Selected \"Open image file\"" << std::endl;
                 }
 
                 ImGui::EndMenu();
@@ -104,6 +103,7 @@ int main(int argc, char **argv)
                 // Create new node
                 if (ImGui::MenuItem("New node"))
                 {
+                    node_editor->newImageNode();
                     std::cout << "Selected \"New node\"" << std::endl;
                 }
 
@@ -115,19 +115,13 @@ int main(int argc, char **argv)
         //////////////////////
         ///// Draw nodes /////
         //////////////////////
-        ImNodes::BeginNodeEditor();
-        for (auto node : node_list)
-        {
-            node->draw();
-        }
+        node_editor->draw();
 
-        // End drawing node and window
-        ImNodes::EndNodeEditor();
+        // End drawing window
         ImGui::End();
 
-        ImGui::Render();
-
         // Rendering
+        ImGui::Render();
         SDL_SetRenderDrawColor(
             renderer,
             bg_color.x * bg_color.w * 255,

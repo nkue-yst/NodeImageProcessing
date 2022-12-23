@@ -36,6 +36,8 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/source)
 set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
+    ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
+    ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
 )
 add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
