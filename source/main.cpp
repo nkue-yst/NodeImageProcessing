@@ -12,8 +12,8 @@ int main(int argc, char **argv)
     SDL_Init(SDL_INIT_VIDEO);
 
     // Create window
-    uint32_t win_width  = 1280;
-    uint32_t win_height = 720;
+    int32_t win_width  = 1280;
+    int32_t win_height = 720;
     SDL_WindowFlags win_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
 
@@ -57,12 +57,16 @@ int main(int argc, char **argv)
             }
         }
 
+        // Update main window size
+        SDL_GetWindowSize(win, &win_width, &win_height);
+
         // Start ImGui frame
         ImGui_ImplSDLRenderer_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
         // Begin drawing node and window
+        ImGui::SetNextWindowSize(ImVec2(win_width, win_height), ImGuiCond_Always);
         ImGui::Begin("NodeImageProcessing");
         ImNodes::BeginNodeEditor();
 
