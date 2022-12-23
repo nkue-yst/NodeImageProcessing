@@ -19,12 +19,15 @@ private:
     // Search for available node ID
     int32_t findAvailableID();
 
+    // Search for available pin ID
+    std::vector<int32_t> findAvailablePins(uint32_t pin_num);
+
     // Node list
     std::vector<class NodeBase*> node_list_;
 
     // Using node id list
     std::vector<int32_t> id_list_;
 
-    // Max num of node
-    int32_t max_node_num_ = 100;
+    // Using pin id list
+    std::vector<int32_t> pin_list_;
 };

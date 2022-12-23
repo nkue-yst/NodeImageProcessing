@@ -125,10 +125,10 @@ int main(int argc, char **argv)
         // Edit menu
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("Edit"))
+            if (ImGui::BeginMenu("NewNode"))
             {
                 // Create new node
-                if (ImGui::MenuItem("New Node"))
+                if (ImGui::MenuItem("ImageNode"))
                 {
                     node_editor->newImageNode();
                 }

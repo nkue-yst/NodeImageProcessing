@@ -6,8 +6,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-ImageNode::ImageNode(int32_t id)
-    : NodeBase(id)
+ImageNode::ImageNode(int32_t id, std::vector<int32_t> pins)
+    : NodeBase(id, pins)
 {
     // Load image file
     int32_t width = 0;
@@ -48,10 +48,25 @@ void ImageNode::draw()
     // Image data
     ImGui::Image((void*)(intptr_t)this->image_data_, ImVec2(100.f, 100.f));
     
-    // Output pin
-    ImNodes::BeginOutputAttribute(1);
+    // Output pins
+    ImNodes::BeginOutputAttribute(this->pin_list_.at(0));
     ImGui::Indent(75.f);
     ImGui::Text("RGB");
+    ImNodes::EndOutputAttribute();
+
+    ImNodes::BeginOutputAttribute(this->pin_list_.at(1));
+    ImGui::Indent(75.f);
+    ImGui::Text("R");
+    ImNodes::EndOutputAttribute();
+
+    ImNodes::BeginOutputAttribute(this->pin_list_.at(2));
+    ImGui::Indent(75.f);
+    ImGui::Text("G");
+    ImNodes::EndOutputAttribute();
+
+    ImNodes::BeginOutputAttribute(this->pin_list_.at(3));
+    ImGui::Indent(75.f);
+    ImGui::Text("B");
     ImNodes::EndOutputAttribute();
 
     ImNodes::EndNode();
