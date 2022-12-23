@@ -1,4 +1,8 @@
+#include <iostream>
 #include <memory>
+#include <vector>
+
+#include "NodeBase.hpp"
 
 #include <SDL.h>
 
@@ -15,7 +19,8 @@ int main(int argc, char **argv)
     int32_t win_width  = 1280;
     int32_t win_height = 720;
     SDL_WindowFlags win_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
+    //SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
+    SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", 100, 1500, win_width, win_height, win_flags);
 
     // Create renderer
     SDL_Renderer *renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
@@ -37,6 +42,9 @@ int main(int argc, char **argv)
     ImNodes::StyleColorsDark();
     ImVec4 bg_color = ImVec4(0.4f, 0.4f, 0.4f, 1.f);
     ImNodes::SetNodeGridSpacePos(1, ImVec2(200.f, 200.f));
+
+    // Node list
+    std::vector<class NodeBase*> node_list;
 
     bool done = false;
     while (!done)
@@ -67,16 +75,51 @@ int main(int argc, char **argv)
 
         // Begin drawing node and window
         ImGui::SetNextWindowSize(ImVec2(win_width, win_height), ImGuiCond_Always);
-        ImGui::Begin("NodeImageProcessing");
-        ImNodes::BeginNodeEditor();
+        ImGui::Begin("NodeImageProcessing", nullptr, ImGuiWindowFlags_MenuBar);
 
-        ///////////////////////////////////
-        ///// Drawing node and window /////
-        ///////////////////////////////////
-        // Test node
-        ImNodes::BeginNode(1);
-        ImGui::Dummy(ImVec2(80.f, 40.f));
-        ImNodes::EndNode();
+        /////////////////////////
+        ///// Draw menu bar /////
+        /////////////////////////
+        // File menu
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                // Open image file
+                if (ImGui::MenuItem("Open"))
+                {
+                    std::cout << "Selected \"Open\"" << std::endl;
+                }
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
+        // Edit menu
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Edit"))
+            {
+                // Create new node
+                if (ImGui::MenuItem("New node"))
+                {
+                    std::cout << "Selected \"New node\"" << std::endl;
+                }
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
+        //////////////////////
+        ///// Draw nodes /////
+        //////////////////////
+        ImNodes::BeginNodeEditor();
+        for (auto node : node_list)
+        {
+            node->draw();
+        }
 
         // End drawing node and window
         ImNodes::EndNodeEditor();
