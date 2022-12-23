@@ -1,23 +1,42 @@
 #include <memory>
 
-#include "Window.hpp"
-
 #include <SDL.h>
 
-int main(int argc, char** argv)
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdlrenderer.h"
+#include "imnodes.h"
+
+int main(int argc, char **argv)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    // Window instance
-    std::unique_ptr<Window> win = std::make_unique<Window>();
+    // Create window
+    uint32_t win_width  = 1280;
+    uint32_t win_height = 720;
+    SDL_WindowFlags win_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
+
+    // Create renderer
+    SDL_Renderer *renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
     // Initialize ImGui
-    ImGui::CreateContext();
-    ImGui_ImplSDL2_InitForSDLRenderer(win->get(), win->getRenderer());
-    ImGui_ImplSDLRenderer_Init(win->getRenderer());
+    IMGUI_CHECKVERSION();
+    ImGuiContext *imgui_context = ImGui::CreateContext();
+    ImNodesContext *imnodes_context = ImNodes::CreateContext();
 
-    bool show_window = true;
-    bool show_another_window = false;
+    ImGui_ImplSDL2_InitForSDLRenderer(win, renderer);
+    ImGui_ImplSDLRenderer_Init(renderer);
+
+    // Font settings
+    ImGuiIO &io = ImGui::GetIO();
+    io.Fonts->Build();
+
+    // Set style
+    ImGui::StyleColorsDark();
+    ImNodes::StyleColorsDark();
+    ImVec4 bg_color = ImVec4(0.4f, 0.4f, 0.4f, 1.f);
+    ImNodes::SetNodeGridSpacePos(1, ImVec2(200.f, 200.f));
 
     bool done = false;
     while (!done)
@@ -27,21 +46,61 @@ int main(int argc, char** argv)
         while (SDL_PollEvent(&ev))
         {
             ImGui_ImplSDL2_ProcessEvent(&ev);
-            
+
             if (ev.type == SDL_QUIT)
             {
                 done = true;
             }
-            else if (ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_CLOSE && ev.window.windowID == SDL_GetWindowID(win->get()))
+            else if (ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_CLOSE && ev.window.windowID == SDL_GetWindowID(win))
             {
                 done = true;
             }
         }
+
+        // Start ImGui frame
+        ImGui_ImplSDLRenderer_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        // Begin drawing node and window
+        ImGui::Begin("NodeImageProcessing");
+        ImNodes::BeginNodeEditor();
+
+        ///////////////////////////////////
+        ///// Drawing node and window /////
+        ///////////////////////////////////
+        // Test node
+        ImNodes::BeginNode(1);
+        ImGui::Dummy(ImVec2(80.f, 40.f));
+        ImNodes::EndNode();
+
+        // End drawing node and window
+        ImNodes::EndNodeEditor();
+        ImGui::End();
+
+        ImGui::Render();
+
+        // Rendering
+        SDL_SetRenderDrawColor(
+            renderer,
+            bg_color.x * bg_color.w * 255,
+            bg_color.y * bg_color.w * 255,
+            bg_color.z * bg_color.w * 255,
+            SDL_ALPHA_OPAQUE
+        );
+        SDL_RenderClear(renderer);
+        ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+        SDL_RenderPresent(renderer);
     }
+
+    // Clean up SDL
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(win);
 
     // Clean up ImGui
     ImGui_ImplSDLRenderer_Shutdown();
     ImGui_ImplSDL2_Shutdown();
+    ImNodes::DestroyContext();
     ImGui::DestroyContext();
     SDL_Quit();
 }
