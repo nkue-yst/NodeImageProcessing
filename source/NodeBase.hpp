@@ -14,9 +14,11 @@ public:
 
     virtual void draw() = 0;
 
+    // Connected event
+    virtual void connect() {}
+
     int32_t getID() const { return this->id_; }
 
-protected:
     std::vector<int32_t> pin_list_;
 
 private:

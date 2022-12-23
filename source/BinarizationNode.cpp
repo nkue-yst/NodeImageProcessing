@@ -38,3 +38,13 @@ void BinarizationNode::draw()
 
     ImNodes::EndNode();
 }
+
+void BinarizationNode::connect()
+{
+    this->binarization();
+}
+
+void BinarizationNode::binarization()
+{
+
+}

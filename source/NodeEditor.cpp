@@ -39,23 +39,38 @@ void NodeEditor::draw()
         Link new_link;
         if (ImNodes::IsLinkCreated(&new_link.start_attr, &new_link.end_attr))
         {
-            auto iter = std::find_if(
-                this->link_list_.begin(),
-                this->link_list_.end(),
-                [new_link](const Link& link) -> bool
             {
-                return link.end_attr == new_link.end_attr;
-            });
+                auto iter = std::find_if(
+                    this->link_list_.begin(),
+                    this->link_list_.end(),
+                    [new_link](const Link& link) -> bool
+                {
+                    return link.end_attr == new_link.end_attr;
+                });
 
-            // Disconnect old connection
-            if (iter != this->link_list_.end())
-            {
-                this->link_list_.erase(iter);
+                // Disconnect old connection
+                if (iter != this->link_list_.end())
+                {
+                    this->link_list_.erase(iter);
+                }
+
+                // Connect new connection
+                new_link.id = link_index++;
+                this->link_list_.push_back(new_link);
             }
 
-            // Connect new connection
-            new_link.id = link_index++;
-            this->link_list_.push_back(new_link);
+            // Call connected event
+            {
+                auto iter = std::find_if(
+                    this->node_list_.begin(),
+                    this->node_list_.end(),
+                    [new_link](NodeBase* node) -> bool
+                {
+                    return std::find(node->pin_list_.begin(), node->pin_list_.end(), new_link.end_attr) != node->pin_list_.end();
+                });
+
+                (*iter)->connect();
+            }
         }
     }
 
