@@ -4,3 +4,9 @@
 [submodule "thirdparty/imnodes"]
 	path = thirdparty/imnodes
 	url = git@github.com:Nelarius/imnodes.git
+[submodule "thirdparty/cmake/sdl2"]
+	path = thirdparty/cmake/sdl2
+	url = git@github.com:aminosbh/sdl2-cmake-modules.git
+[submodule "thirdparty/stb"]
+	path = thirdparty/stb
+	url = git@github.com:nothings/stb.git
