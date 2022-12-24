@@ -5,8 +5,7 @@
 #include "imnodes.h"
 
 #include "BinarizationNode.hpp"
-#include "ImageNode.hpp"
-#include "NodeBase.hpp"
+#include "ImageSourceNode.hpp"
 
 void NodeEditor::init()
 {
@@ -92,22 +91,19 @@ void NodeEditor::draw()
     }
 }
 
-void NodeEditor::newImageNode()
+void NodeEditor::newImageNode(NodeType type)
 {
-    int32_t id = this->findAvailableID();
-    std::vector<int32_t> pin_list = this->findAvailablePins(4);
+    // Generate new ImageNode
+    ImageNode* new_node = ImageNode::create(type);
+    
+    // Node setting
+    uint32_t need_pin = new_node->input_pin_ + new_node->output_pin_;
+    new_node->id_ = this->findAvailableID();
+    new_node->pin_list_ = this->assignAvailablePins(new_node->input_pin_ + new_node->output_pin_);
 
-    this->node_list_.push_back(new ImageNode(id, pin_list));
-    this->id_list_.push_back(id);
-}
-
-void NodeEditor::newBinarizationNode()
-{
-    int32_t id = this->findAvailableID();
-    std::vector<int32_t> pin_list = this->findAvailablePins(2);
-
-    this->node_list_.push_back(new BinarizationNode(id, pin_list));
-    this->id_list_.push_back(id);
+    // Add to list for management nodes
+    this->node_list_.push_back(new_node);
+    this->id_list_.push_back(new_node->id_);
 }
 
 int32_t NodeEditor::findAvailableID()
@@ -124,7 +120,7 @@ int32_t NodeEditor::findAvailableID()
     return -1;
 }
 
-std::vector<int32_t> NodeEditor::findAvailablePins(uint32_t pin_num)
+std::vector<int32_t> NodeEditor::assignAvailablePins(uint32_t pin_num)
 {
     std::vector<int32_t> pin_list;
 

@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "NodeBase.hpp"
+
 struct Link
 {
     int32_t id;
@@ -19,17 +21,14 @@ public:
     void draw();
 
     // Create new ImageNode and add to node list
-    void newImageNode();
-
-    // Create new BinarizationNode and add to node list
-    void newBinarizationNode();
+    void newImageNode(NodeType type);
 
 private:
     // Search for available node ID
     int32_t findAvailableID();
 
     // Search for available pin ID
-    std::vector<int32_t> findAvailablePins(uint32_t pin_num);
+    std::vector<int32_t> assignAvailablePins(uint32_t pin_num);
 
     // Node list
     std::vector<class NodeBase*> node_list_;

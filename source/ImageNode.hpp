@@ -7,10 +7,10 @@
 class ImageNode : public NodeBase
 {
 public:
-    ImageNode(int32_t id, std::vector<int32_t> pins);
+    static ImageNode* create(NodeType type);
 
     void draw() override;
 
-private:
+protected:
     GLuint image_data_;
 };

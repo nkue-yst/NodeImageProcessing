@@ -47,6 +47,7 @@ set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
     ${CMAKE_SOURCE_DIR}/source/BinarizationNode.cpp
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
+	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
 )
 add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES})

@@ -2,19 +2,16 @@
 
 #include "GL/gl.h"
 
-#include "NodeBase.hpp"
+#include "ImageNode.hpp"
 
-class BinarizationNode : public NodeBase
+class BinarizationNode : public ImageNode
 {
 public:
-    BinarizationNode(int32_t id, std::vector<int32_t> pins);
+    BinarizationNode();
 
-    void draw() override;
     void connect() override;
 
 private:
     // Execute binarization
     void binarization();
-
-    GLuint image_data_;
 };
