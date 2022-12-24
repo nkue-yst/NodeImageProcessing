@@ -65,7 +65,7 @@ void NodeEditor::draw()
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
                 {
-                    return std::find(node->pin_list_.begin(), node->pin_list_.end(), new_link.end_attr) != node->pin_list_.end();
+                    return std::find(node->pin_attr_list_.begin(), node->pin_attr_list_.end(), new_link.end_attr) != node->pin_attr_list_.end();
                 });
 
                 auto start_node = std::find_if(
@@ -73,7 +73,7 @@ void NodeEditor::draw()
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
                 {
-                    return std::find(node->pin_list_.begin(), node->pin_list_.end(), new_link.start_attr) != node->pin_list_.end();
+                    return std::find(node->pin_attr_list_.begin(), node->pin_attr_list_.end(), new_link.start_attr) != node->pin_attr_list_.end();
                 });
 
                 (*end_node)->connect(*start_node);
@@ -107,7 +107,7 @@ void NodeEditor::newImageNode(NodeType type)
     // Node setting
     uint32_t need_pin = new_node->input_pin_ + new_node->output_pin_;
     new_node->id_ = this->findAvailableID();
-    new_node->pin_list_ = this->assignAvailablePins(new_node->input_pin_ + new_node->output_pin_);
+    new_node->pin_attr_list_ = this->assignAvailablePins(new_node->input_pin_ + new_node->output_pin_);
 
     // Add to list for management nodes
     this->node_list_.push_back(new_node);

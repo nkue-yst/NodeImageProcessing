@@ -90,7 +90,7 @@ public:
     // Node color
     Color node_color_;
 
-    std::vector<int32_t> pin_list_;
+    std::vector<int32_t> pin_attr_list_;
 
     // Node title
     std::string title_;
@@ -103,4 +103,7 @@ public:
 
     // Number of output pin
     uint32_t output_pin_;
+
+    // Pin names
+    std::vector<const char*> pin_names_;
 };

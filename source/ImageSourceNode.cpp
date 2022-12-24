@@ -6,9 +6,12 @@
 ImageSourceNode::ImageSourceNode()
 {
     // Node setting
-    this->setPinNum(0, 4);
+    this->setPinNum(0, 1);
     this->title_ = "ImageSource";
     this->node_color_ = NodeColor::ImageSourceNode;
+
+    // Pin name setting
+    this->pin_names_.push_back("RGB");
 
     // Load image file
     int32_t width = 0;

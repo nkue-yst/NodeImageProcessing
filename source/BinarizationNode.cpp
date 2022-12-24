@@ -11,6 +11,10 @@ BinarizationNode::BinarizationNode()
     this->setPinNum(1, 1);
     this->title_ = "Binarization";
     this->node_color_ = NodeColor::BinarizationNode;
+
+    // Pin name setting
+    this->pin_names_.push_back("InputImage");
+    this->pin_names_.push_back("Result");
 }
 
 void BinarizationNode::connect(NodeBase* node)
