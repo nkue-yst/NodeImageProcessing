@@ -24,10 +24,7 @@ ImageNode* ImageNode::create(NodeType type)
 void ImageNode::draw()
 {
     // Set style
-    ImNodesStyle& style = ImNodes::GetStyle();
-    style.Colors[ImNodesCol_TitleBar]         = IM_COL32(255 * 0.8, 128 * 0.8, 128 * 0.8, 200);
-    style.Colors[ImNodesCol_TitleBarHovered]  = IM_COL32(255, 128, 128, 200);
-    style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(255, 128, 128, 200);
+    this->applyNodeColor();
 
     ImNodes::BeginNode(this->getID());
     

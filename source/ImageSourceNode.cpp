@@ -8,6 +8,7 @@ ImageSourceNode::ImageSourceNode()
     // Node setting
     this->setPinNum(0, 4);
     this->title_ = "ImageSource";
+    this->node_color_ = NodeColor::ImageSourceNode;
 
     // Load image file
     int32_t width = 0;

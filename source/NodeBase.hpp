@@ -5,6 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
+#include "imnodes.h"
+
+#include "NodeStyle.hpp"
+
 // Kind of node
 enum NodeType_
 {
@@ -48,6 +52,30 @@ public:
 
     virtual void draw() = 0;
 
+    // Set node color
+    void applyNodeColor()
+    {
+        ImNodesStyle& style = ImNodes::GetStyle();
+        style.Colors[ImNodesCol_TitleBar] = IM_COL32(
+            this->node_color_.r * 0.8,
+            this->node_color_.g * 0.8,
+            this->node_color_.b * 0.8,
+            200
+        );
+        style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(
+            this->node_color_.r,
+            this->node_color_.g,
+            this->node_color_.b,
+            200
+        );
+        style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(
+            this->node_color_.r,
+            this->node_color_.g,
+            this->node_color_.b,
+            200
+        );
+    }
+
     // Connected event
     virtual void connect(NodeBase* node) {}
 
@@ -58,6 +86,9 @@ public:
         this->input_pin_ = input;
         this->output_pin_ = output;
     }
+
+    // Node color
+    Color node_color_;
 
     std::vector<int32_t> pin_list_;
 

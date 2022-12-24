@@ -10,6 +10,7 @@ BinarizationNode::BinarizationNode()
     // Node setting
     this->setPinNum(1, 1);
     this->title_ = "Binarization";
+    this->node_color_ = NodeColor::BinarizationNode;
 }
 
 void BinarizationNode::connect(NodeBase* node)
