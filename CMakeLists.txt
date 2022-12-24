@@ -34,6 +34,10 @@ set(IMNODES_SOURCES ${IMNODES_DIR}/imnodes.cpp)
 ### OpenGL ###
 find_package(OpenGL REQUIRED)
 
+### OpenCV ###
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 ### SDL2 ###
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -51,17 +55,12 @@ set(NIP_SOURCES
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
 )
 add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES})
-target_link_libraries(${PROJECT_NAME} OpenGL::GL SDL2::Core SDL2::Main)
+target_link_libraries(${PROJECT_NAME} OpenGL::GL ${OpenCV_LIBRARIES} SDL2::Core SDL2::Main)
 
 if(WIN32)
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 	set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif(WIN32)
-
-if(NIP_TESTS)
-	add_executable(test_SimpleWindow ${CMAKE_SOURCE_DIR}/source/test.cpp ${IMGUI_SOURCES} ${IMNODES_SOURCES})
-	target_link_libraries(test_SimpleWindow ${SDL2_LIBRARIES})
-endif()
 
 ### Copy sample images ###
 file(COPY ${CMAKE_SOURCE_DIR}/sample DESTINATION ${CMAKE_BINARY_DIR})

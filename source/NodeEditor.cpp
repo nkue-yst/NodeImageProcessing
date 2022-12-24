@@ -60,7 +60,7 @@ void NodeEditor::draw()
 
             // Call connected event
             {
-                auto iter = std::find_if(
+                auto end_node = std::find_if(
                     this->node_list_.begin(),
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
@@ -68,7 +68,15 @@ void NodeEditor::draw()
                     return std::find(node->pin_list_.begin(), node->pin_list_.end(), new_link.end_attr) != node->pin_list_.end();
                 });
 
-                (*iter)->connect();
+                auto start_node = std::find_if(
+                    this->node_list_.begin(),
+                    this->node_list_.end(),
+                    [new_link](NodeBase* node) -> bool
+                {
+                    return std::find(node->pin_list_.begin(), node->pin_list_.end(), new_link.start_attr) != node->pin_list_.end();
+                });
+
+                (*end_node)->connect(*start_node);
             }
         }
     }

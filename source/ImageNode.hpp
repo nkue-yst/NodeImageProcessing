@@ -2,6 +2,8 @@
 
 #include "GL/gl.h"
 
+#include <opencv2/opencv.hpp>
+
 #include "NodeBase.hpp"
 
 class ImageNode : public NodeBase
@@ -12,5 +14,12 @@ public:
     void draw() override;
 
 protected:
-    GLuint image_data_;
+    GLuint convertCVmatToGLtexture(cv::Mat* mat);
+
+public:
+    // Image data for drawing
+    GLuint image_data_gl_;
+
+    // Image data for processing
+    cv::Mat image_data_cv_;
 };

@@ -9,7 +9,7 @@ class BinarizationNode : public ImageNode
 public:
     BinarizationNode();
 
-    void connect() override;
+    void connect(NodeBase* node) override;
 
 private:
     // Execute binarization

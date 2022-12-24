@@ -3,9 +3,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-ImageSourceNode::ImageSourceNode()    
+ImageSourceNode::ImageSourceNode()
 {
+    // Node setting
     this->setPinNum(0, 4);
+    this->title_ = "ImageSource";
 
     // Load image file
     int32_t width = 0;
@@ -25,5 +27,8 @@ ImageSourceNode::ImageSourceNode()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
     stbi_image_free(image_data);
 
-    this->image_data_ = image_texture;
+    this->image_data_gl_ = image_texture;
+
+    // Load image file for processing
+    this->image_data_cv_ = cv::imread("sample/github.png");
 }

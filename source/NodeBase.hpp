@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -48,7 +49,7 @@ public:
     virtual void draw() = 0;
 
     // Connected event
-    virtual void connect() {}
+    virtual void connect(NodeBase* node) {}
 
     int32_t getID() const { return this->id_; }
 
@@ -59,6 +60,9 @@ public:
     }
 
     std::vector<int32_t> pin_list_;
+
+    // Node title
+    std::string title_;
 
     // Node ID
     int32_t id_;

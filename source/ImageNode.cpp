@@ -25,19 +25,19 @@ void ImageNode::draw()
 {
     // Set style
     ImNodesStyle& style = ImNodes::GetStyle();
-    style.Colors[ImNodesCol_TitleBar] = IM_COL32(255 * 0.8, 128 * 0.8, 128 * 0.8, 200);
-    style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(255, 128, 128, 200);
+    style.Colors[ImNodesCol_TitleBar]         = IM_COL32(255 * 0.8, 128 * 0.8, 128 * 0.8, 200);
+    style.Colors[ImNodesCol_TitleBarHovered]  = IM_COL32(255, 128, 128, 200);
     style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(255, 128, 128, 200);
 
     ImNodes::BeginNode(this->getID());
     
     // Title bar
     ImNodes::BeginNodeTitleBar();
-    ImGui::TextUnformatted("Image");
+    ImGui::TextUnformatted(this->title_.c_str());
     ImNodes::EndNodeTitleBar();
 
     // Image data
-    ImGui::Image((void*)(intptr_t)this->image_data_, ImVec2(100.f, 100.f));
+    ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
     
     // Input pins
     uint32_t i = 0;
@@ -55,4 +55,24 @@ void ImageNode::draw()
     }
 
     ImNodes::EndNode();
+}
+
+GLuint ImageNode::convertCVmatToGLtexture(cv::Mat* mat)
+{
+    GLuint texture_id;
+
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+    cv::cvtColor((*mat), (*mat), cv::COLOR_RGB2BGR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (*mat).cols, (*mat).rows, 0, GL_RGB, GL_UNSIGNED_BYTE, (*mat).ptr());
+
+    return texture_id;
 }
