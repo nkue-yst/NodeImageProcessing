@@ -125,7 +125,7 @@ int main(int argc, char **argv)
         // Edit menu
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("NewNode"))
+            if (ImGui::BeginMenu("ImageProcessing"))
             {
                 // Create new ImageNode
                 if (ImGui::MenuItem("ImageSource"))
@@ -137,6 +137,12 @@ int main(int argc, char **argv)
                 if (ImGui::MenuItem("Binarization"))
                 {
                     node_editor->newImageNode(NT_Binarization);
+                }
+
+                // Create new GrayScalingNode
+                if (ImGui::MenuItem("GrayScaling"))
+                {
+                    node_editor->newImageNode(NT_GrayScaling);
                 }
 
                 ImGui::EndMenu();

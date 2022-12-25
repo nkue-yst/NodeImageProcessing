@@ -1,15 +1,15 @@
-#include "BinarizationNode.hpp"
+#include "GrayScalingNode.hpp"
 
 #include <opencv2/opencv.hpp>
 
 #include "imgui.h"
 #include "imnodes.h"
 
-BinarizationNode::BinarizationNode()
+GrayScalingNode::GrayScalingNode()
 {
     // Node setting
     this->setPinNum(1, 1);
-    this->title_ = "Binarization";
+    this->title_ = "GrayScaling";
     this->node_color_ = NodeColor::ImageProcessingNode;
 
     // Pin name setting
@@ -17,24 +17,21 @@ BinarizationNode::BinarizationNode()
     this->pin_names_.push_back("Result");
 }
 
-void BinarizationNode::connect(NodeBase* node)
+void GrayScalingNode::connect(NodeBase* node)
 {
     // Read image data from previous node
     this->image_data_cv_ = ((ImageNode*)node)->image_data_cv_;
-    this->binarization();
+    this->grayscaling();
     this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
 }
 
-void BinarizationNode::disconnect(NodeBase* node)
+void GrayScalingNode::disconnect(NodeBase* node)
 {
     glDeleteTextures(1, &this->image_data_gl_);
 }
 
-void BinarizationNode::binarization()
+void GrayScalingNode::grayscaling()
 {
     // Grayscaling
     cv::cvtColor(this->image_data_cv_, this->image_data_cv_, cv::COLOR_BGR2GRAY);
-
-    // Binarization
-    cv::threshold(this->image_data_cv_, this->image_data_cv_, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 }

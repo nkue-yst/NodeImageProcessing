@@ -9,6 +9,6 @@ struct Color
 
 namespace NodeColor
 {
-    constexpr Color ImageSourceNode  { 255, 128, 128 };
-    constexpr Color BinarizationNode { 128, 128, 255 };
+    constexpr Color ImageSourceNode     { 255, 128, 128 };
+    constexpr Color ImageProcessingNode { 128, 128, 255 };
 }

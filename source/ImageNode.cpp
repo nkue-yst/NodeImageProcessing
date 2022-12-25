@@ -4,6 +4,7 @@
 #include "imnodes.h"
 
 #include "BinarizationNode.hpp"
+#include "GrayScalingNode.hpp"
 #include "ImageSourceNode.hpp"
 
 ImageNode* ImageNode::create(NodeType type)
@@ -16,6 +17,9 @@ ImageNode* ImageNode::create(NodeType type)
     case NT_Binarization:
         return new BinarizationNode();
     
+    case NT_GrayScaling:
+        return new GrayScalingNode();
+
     default:
         return nullptr;
     }

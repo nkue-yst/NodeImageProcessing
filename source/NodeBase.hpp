@@ -16,6 +16,7 @@ enum NodeType_
     __ImageNode,
     NT_ImageSource,
     NT_Binarization,
+    NT_GrayScaling,
 
     // ↓ MovieNode ↓
     __MovieNode,
@@ -27,17 +28,6 @@ enum NodeType_
 
     NT_UNDEFINED,
 } typedef NodeType;
-
-// Define number of pin by node type
-/*
-static std::unordered_map<NodeType, std::pair<uint32_t, uint32_t>> pin_num =
-{
-    { NT_ImageSource,  std::pair(0, 4) },
-    { NT_Binarization, std::pair(1, 1) },
-
-    { NT_UNDEFINED,    std::pair(0, 0) },
-};
-*/
 
 // Base class of connectable node
 class NodeBase

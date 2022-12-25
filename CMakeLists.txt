@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+if(NOT DEFINED CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
+    set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE INTERNAL "No dev warnings.")
+endif()
+
 project(NodeImageProcessing CXX)
 
 ### OPTIONS ###
@@ -40,7 +44,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 ### SDL2 ###
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+include_directories(${SDL2_INCLUDE_DIR})
 
 ### stb ###
 include_directories(${CMAKE_SOURCE_DIR}/thirdparty/stb)
@@ -50,6 +54,7 @@ include_directories(${CMAKE_SOURCE_DIR}/source)
 set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
     ${CMAKE_SOURCE_DIR}/source/BinarizationNode.cpp
+    ${CMAKE_SOURCE_DIR}/source/GrayScalingNode.cpp
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
 	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
