@@ -35,6 +35,10 @@ set(IMNODES_DIR ${CMAKE_SOURCE_DIR}/thirdparty/imnodes)
 include_directories(${IMNODES_DIR})
 set(IMNODES_SOURCES ${IMNODES_DIR}/imnodes.cpp)
 
+### ImGuiFileDialog ###
+include_directories(${CMAKE_SOURCE_DIR}/thirdparty/ImGuiFileDialog)
+set(IMGUI_FILE_DIALOG_SOURCES ${CMAKE_SOURCE_DIR}/thirdparty/ImGuiFileDialog/ImGuiFileDialog.cpp)
+
 ### OpenGL ###
 find_package(OpenGL REQUIRED)
 
@@ -59,7 +63,7 @@ set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
 )
-add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES})
+add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES} ${IMGUI_FILE_DIALOG_SOURCES})
 target_link_libraries(${PROJECT_NAME} OpenGL::GL ${OpenCV_LIBRARIES} SDL2::Core SDL2::Main)
 
 if(WIN32)

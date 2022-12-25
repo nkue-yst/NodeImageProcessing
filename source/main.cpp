@@ -8,6 +8,7 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "imnodes.h"
+#include "ImGuiFileDialog.h"
 
 #include "NodeBase.hpp"
 #include "NodeEditor.hpp"
@@ -105,10 +106,10 @@ int main(int argc, char **argv)
         {
             if (ImGui::BeginMenu("File"))
             {
-                // Open image file
+                // Open dialog to select image file
                 if (ImGui::MenuItem("Open Image File"))
                 {
-                    std::cout << "Selected \"Open image file\"" << std::endl;
+                    ImGuiFileDialog::Instance()->OpenDialog("SelectImageDlgKey", "Select Image File", ".png,.jpg,.jpeg", ".");
                 }
 
                 // Exit button
@@ -148,6 +149,21 @@ int main(int argc, char **argv)
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
+        }
+
+        //////////////////////////////////////
+        ///// Draw dialog to select file /////
+        //////////////////////////////////////
+        // Draw dialog to select image file
+        if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey"))
+        {
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
+            }
+
+            ImGuiFileDialog::Instance()->Close();
         }
 
         //////////////////////
