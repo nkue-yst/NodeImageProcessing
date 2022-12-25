@@ -79,6 +79,9 @@ public:
     // Connected event
     virtual void connect(NodeBase* node) {}
 
+    // Disconnected event
+    virtual void disconnect(NodeBase* node) {}
+
     int32_t getID() const { return this->id_; }
 
     void setPinNum(uint32_t input, uint32_t output)

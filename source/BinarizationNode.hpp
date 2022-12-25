@@ -10,6 +10,7 @@ public:
     BinarizationNode();
 
     void connect(NodeBase* node) override;
+    void disconnect(NodeBase* node) override;
 
 private:
     // Execute binarization

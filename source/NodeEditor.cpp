@@ -94,6 +94,23 @@ void NodeEditor::draw()
                 return link.id == link_id;
             });
 
+            auto start_node = std::find_if(
+                this->node_list_.begin(),
+                this->node_list_.end(),
+                [link_id, iter](NodeBase* node) -> bool
+            {
+                return std::find(node->pin_attr_list_.begin(), node->pin_attr_list_.end(), (*iter).start_attr) != node->pin_attr_list_.end();
+            });
+
+            auto end_node = std::find_if(
+                this->node_list_.begin(),
+                this->node_list_.end(),
+                [link_id, iter](NodeBase* node) -> bool
+            {
+                return std::find(node->pin_attr_list_.begin(), node->pin_attr_list_.end(), (*iter).end_attr) != node->pin_attr_list_.end();
+            });
+
+            (*end_node)->disconnect(*start_node);
             this->link_list_.erase(iter);
         }
     }

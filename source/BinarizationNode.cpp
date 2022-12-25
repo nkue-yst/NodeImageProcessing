@@ -25,6 +25,11 @@ void BinarizationNode::connect(NodeBase* node)
     this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
 }
 
+void BinarizationNode::disconnect(NodeBase* node)
+{
+    glDeleteTextures(1, &this->image_data_gl_);
+}
+
 void BinarizationNode::binarization()
 {
     // Grayscaling
