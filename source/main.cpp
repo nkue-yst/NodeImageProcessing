@@ -57,6 +57,46 @@ int main(int argc, char **argv)
     // Initialize Node editor
     NodeEditor::get().init();
 
+    // Initialize file dialog settings
+    ImGuiFileDialog::Instance()->SetCreateThumbnailCallback([](IGFD_Thumbnail_Info *vThumbnail_Info) -> void
+    {
+        if (vThumbnail_Info && 
+            vThumbnail_Info->isReadyToUpload && 
+            vThumbnail_Info->textureFileDatas)
+        {
+            GLuint textureId = 0;
+            glGenTextures(1, &textureId);
+            vThumbnail_Info->textureID = (void*)textureId;
+
+            glBindTexture(GL_TEXTURE_2D, textureId);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                (GLsizei)vThumbnail_Info->textureWidth, (GLsizei)vThumbnail_Info->textureHeight, 
+                0, GL_RGBA, GL_UNSIGNED_BYTE, vThumbnail_Info->textureFileDatas);
+            glFinish();
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            delete[] vThumbnail_Info->textureFileDatas;
+            vThumbnail_Info->textureFileDatas = nullptr;
+
+            vThumbnail_Info->isReadyToUpload = false;
+            vThumbnail_Info->isReadyToDisplay = true;
+        }
+    });
+
+    ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback([](IGFD_Thumbnail_Info* vThumbnail_Info)
+    {
+        if (vThumbnail_Info)
+        {
+            GLuint texID = (GLuint)(intptr_t)vThumbnail_Info->textureID;
+            glDeleteTextures(1, &texID);
+            glFinish();
+        }
+    });
+
     // Font settings
     ImGuiIO &io = ImGui::GetIO();
     io.Fonts->Build();
@@ -156,6 +196,8 @@ int main(int argc, char **argv)
         ///// Draw dialog to select file /////
         //////////////////////////////////////
         // Draw dialog to select image file
+        ImGuiFileDialog::Instance()->ManageGPUThumbnails();
+
         if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey"))
         {
             if (ImGuiFileDialog::Instance()->IsOk())
