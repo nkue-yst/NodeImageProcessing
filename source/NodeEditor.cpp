@@ -116,7 +116,7 @@ void NodeEditor::draw()
     }
 }
 
-void NodeEditor::newImageNode(NodeType type)
+void NodeEditor::newImageNode(NodeType type, const char* file_path)
 {
     // Generate new ImageNode
     ImageNode* new_node = ImageNode::create(type);
@@ -125,6 +125,9 @@ void NodeEditor::newImageNode(NodeType type)
     uint32_t need_pin = new_node->input_pin_ + new_node->output_pin_;
     new_node->id_ = this->findAvailableID();
     new_node->pin_attr_list_ = this->assignAvailablePins(new_node->input_pin_ + new_node->output_pin_);
+
+    if (type == NT_ImageSource)
+        ((ImageSourceNode*)new_node)->loadSource(file_path);
 
     // Add to list for management nodes
     this->node_list_.push_back(new_node);

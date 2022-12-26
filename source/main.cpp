@@ -10,6 +10,7 @@
 #include "imnodes.h"
 #include "ImGuiFileDialog.h"
 
+#include "ImageSourceNode.hpp"
 #include "NodeBase.hpp"
 #include "NodeEditor.hpp"
 
@@ -54,8 +55,7 @@ int main(int argc, char **argv)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Initialize Node editor
-    std::unique_ptr<class NodeEditor> node_editor(new NodeEditor());
-    node_editor->init();
+    NodeEditor::get().init();
 
     // Font settings
     ImGuiIO &io = ImGui::GetIO();
@@ -109,7 +109,8 @@ int main(int argc, char **argv)
                 // Open dialog to select image file
                 if (ImGui::MenuItem("Open Image File"))
                 {
-                    ImGuiFileDialog::Instance()->OpenDialog("SelectImageDlgKey", "Select Image File", ".png,.jpg,.jpeg", ".");
+                    const char* filters = "Image files (*.png *.jpg *.jpeg){.png,.jpg,.jpeg}";
+                    ImGuiFileDialog::Instance()->OpenDialog("SelectImageDlgKey", "Select Image File", filters, ".");
                 }
 
                 // Exit button
@@ -131,19 +132,19 @@ int main(int argc, char **argv)
                 // Create new ImageNode
                 if (ImGui::MenuItem("ImageSource"))
                 {
-                    node_editor->newImageNode(NT_ImageSource);
+                    NodeEditor::get().newImageNode(NT_ImageSource);
                 }
 
                 // Create new BinariztionNode
                 if (ImGui::MenuItem("Binarization"))
                 {
-                    node_editor->newImageNode(NT_Binarization);
+                    NodeEditor::get().newImageNode(NT_Binarization);
                 }
 
                 // Create new GrayScalingNode
                 if (ImGui::MenuItem("GrayScaling"))
                 {
-                    node_editor->newImageNode(NT_GrayScaling);
+                    NodeEditor::get().newImageNode(NT_GrayScaling);
                 }
 
                 ImGui::EndMenu();
@@ -161,15 +162,20 @@ int main(int argc, char **argv)
             {
                 std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
                 std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
-            }
 
+                if (NodeEditor::get().tmp_node_)
+                    ((ImageSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
+                else
+                    NodeEditor::get().newImageNode(NT_ImageSource, file_path.c_str());
+            }
+            
             ImGuiFileDialog::Instance()->Close();
         }
 
         //////////////////////
         ///// Draw nodes /////
         //////////////////////
-        node_editor->draw();
+        NodeEditor::get().draw();
 
         // End drawing window
         ImGui::End();

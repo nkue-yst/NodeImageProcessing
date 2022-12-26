@@ -11,7 +11,7 @@ class ImageNode : public NodeBase
 public:
     static ImageNode* create(NodeType type);
 
-    void draw() override;
+    virtual void draw() override;
 
 protected:
     GLuint convertCVmatToGLtexture(cv::Mat* mat);

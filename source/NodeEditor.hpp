@@ -13,7 +13,23 @@ struct Link
 
 class NodeEditor
 {
+private:
+    NodeEditor() = default;
+    ~NodeEditor() = default;
+
 public:
+    NodeEditor(const NodeEditor&) = delete;
+    NodeEditor& operator=(const NodeEditor&) = delete;
+    NodeEditor(NodeEditor&&) = delete;
+    NodeEditor& operator=(NodeEditor&&) = delete;
+
+    // Getter for singleton instance
+    static inline NodeEditor& get()
+    {
+        static NodeEditor instance_;
+        return instance_;
+    }
+
     // Initialize node editor
     void init();
 
@@ -21,7 +37,7 @@ public:
     void draw();
 
     // Create new ImageNode and add to node list
-    void newImageNode(NodeType type);
+    void newImageNode(NodeType type, const char* file_path = nullptr);
 
 private:
     // Search for available node ID
@@ -30,6 +46,10 @@ private:
     // Search for available pin ID
     std::vector<int32_t> assignAvailablePins(uint32_t pin_num);
 
+public:
+    NodeBase* tmp_node_;
+
+private:
     // Node list
     std::vector<class NodeBase*> node_list_;
 
