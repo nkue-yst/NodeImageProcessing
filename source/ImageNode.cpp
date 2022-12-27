@@ -41,22 +41,21 @@ void ImageNode::draw()
     ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
     
     // Input pins
-    uint32_t i = 0;
-    for (; i < this->input_pin_; ++i)
+    for (Pin& pin : this->input_pin_list_)
     {
-        ImNodes::BeginInputAttribute(this->input_pin_list_.at(i).id_);
-        ImGui::Text(this->input_pin_list_.at(i).name_, NULL);
+        ImNodes::BeginInputAttribute(pin.id_);
+        ImGui::Text(pin.name_, NULL);
         ImNodes::EndInputAttribute();
     }
 
     // Output pins
-    for (; i < this->input_pin_ + this->output_pin_; ++i)
+    for (Pin& pin : this->output_pin_list_)
     {
-        ImNodes::BeginOutputAttribute(this->output_pin_list_.at(i).id_);
-        const float text_width = ImGui::CalcTextSize(this->output_pin_list_.at(i).name_).x;
+        ImNodes::BeginOutputAttribute(pin.id_);
+        const float text_width = ImGui::CalcTextSize(pin.name_).x;
         ImGui::Indent(100.f - text_width);
-        ImGui::Text(this->output_pin_list_.at(i).name_, NULL);
-        ImNodes::EndInputAttribute();
+        ImGui::Text(pin.name_, NULL);
+        ImNodes::EndOutputAttribute();
     }
 
     ImNodes::EndNode();

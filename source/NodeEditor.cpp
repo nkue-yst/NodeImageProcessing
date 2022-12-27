@@ -65,7 +65,13 @@ void NodeEditor::draw()
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
                 {
-                    return std::find(node->output_pin_list_.begin(), node->output_pin_list_.end(), new_link.start_attr) != node->output_pin_list_.end();
+                    return std::find_if(
+                        node->output_pin_list_.begin(),
+                        node->output_pin_list_.end(),
+                        [new_link](Pin pin) -> bool
+                    {
+                        return new_link.start_attr == pin.id_;
+                    }) != node->output_pin_list_.end();
                 });
 
                 auto end_node = std::find_if(
@@ -73,7 +79,13 @@ void NodeEditor::draw()
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
                 {
-                    return std::find(node->input_pin_list_.begin(), node->input_pin_list_.end(), new_link.end_attr) != node->input_pin_list_.end();
+                    return std::find_if(
+                        node->input_pin_list_.begin(),
+                        node->input_pin_list_.end(),
+                        [new_link](Pin pin) -> bool
+                    {
+                        return new_link.end_attr == pin.id_;
+                    })!= node->input_pin_list_.end();
                 });
 
                 (*end_node)->connect(*start_node);
@@ -99,7 +111,13 @@ void NodeEditor::draw()
                 this->node_list_.end(),
                 [link_id, iter](NodeBase* node) -> bool
             {
-                return std::find(node->output_pin_list_.begin(), node->output_pin_list_.end(), (*iter).start_attr) != node->output_pin_list_.end();
+                return std::find_if(
+                    node->output_pin_list_.begin(),
+                    node->output_pin_list_.end(),
+                    [link_id, iter](Pin pin) -> bool
+                {
+                    return (*iter).start_attr == pin.id_;
+                }) != node->output_pin_list_.end();
             });
 
             auto end_node = std::find_if(
@@ -107,7 +125,13 @@ void NodeEditor::draw()
                 this->node_list_.end(),
                 [link_id, iter](NodeBase* node) -> bool
             {
-                return std::find(node->input_pin_list_.begin(), node->input_pin_list_.end(), (*iter).end_attr) != node->input_pin_list_.end();
+                return std::find_if(
+                    node->input_pin_list_.begin(),
+                    node->input_pin_list_.end(),
+                    [link_id, iter](Pin pin) -> bool
+                {
+                    return (*iter).end_attr == pin.id_;
+                }) != node->input_pin_list_.end();
             });
 
             (*end_node)->disconnect(*start_node);
@@ -122,7 +146,6 @@ void NodeEditor::newImageNode(NodeType type, const char* file_path)
     ImageNode* new_node = ImageNode::create(type);
     
     // Node setting
-    uint32_t need_pin = new_node->input_pin_ + new_node->output_pin_;
     new_node->id_ = this->findAvailableID();
     this->assignAvailablePins(new_node->input_pin_list_);
     this->assignAvailablePins(new_node->output_pin_list_);

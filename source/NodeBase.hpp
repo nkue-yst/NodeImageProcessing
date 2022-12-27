@@ -14,6 +14,8 @@ struct Pin
 public:
     int32_t id_;
     const char* name_;
+
+    class NodeBase* connected_node;
 };
 
 // Kind of node
