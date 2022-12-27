@@ -13,8 +13,8 @@ BinarizationNode::BinarizationNode()
     this->node_color_ = NodeColor::ImageProcessingNode;
 
     // Pin name setting
-    this->pin_names_.push_back("InputImage");
-    this->pin_names_.push_back("Result");
+    this->input_pin_list_.at(0).name_ = "InputImage";
+    this->output_pin_list_.at(0).name_ = "Result";
 }
 
 void BinarizationNode::connect(NodeBase* node)

@@ -15,7 +15,7 @@ ImageSourceNode::ImageSourceNode()
     this->node_color_ = NodeColor::ImageSourceNode;
 
     // Pin name setting
-    this->pin_names_.push_back("RGB");
+    this->output_pin_list_.at(0).name_ = "RGB";
 }
 
 void ImageSourceNode::draw()
@@ -46,18 +46,18 @@ void ImageSourceNode::draw()
     uint32_t i = 0;
     for (; i < this->input_pin_; ++i)
     {
-        ImNodes::BeginInputAttribute(this->pin_attr_list_.at(i));
-        ImGui::Text(this->pin_names_.at(i), NULL);
+        ImNodes::BeginInputAttribute(this->input_pin_list_.at(i).id_);
+        ImGui::Text(this->input_pin_list_.at(i).name_, NULL);
         ImNodes::EndInputAttribute();
     }
 
     // Output pins
     for (; i < this->input_pin_ + this->output_pin_; ++i)
     {
-        ImNodes::BeginOutputAttribute(this->pin_attr_list_.at(i));
-        const float text_width = ImGui::CalcTextSize(this->pin_names_.at(i)).x;
+        ImNodes::BeginOutputAttribute(this->output_pin_list_.at(i).id_);
+        const float text_width = ImGui::CalcTextSize(this->output_pin_list_.at(i).name_).x;
         ImGui::Indent(100.f - text_width);
-        ImGui::Text(this->pin_names_.at(i), NULL);
+        ImGui::Text(this->output_pin_list_.at(i).name_, NULL);
         ImNodes::EndInputAttribute();
     }
 

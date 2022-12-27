@@ -9,6 +9,13 @@
 
 #include "NodeStyle.hpp"
 
+struct Pin
+{
+public:
+    int32_t id_;
+    const char* name_;
+};
+
 // Kind of node
 enum NodeType_
 {
@@ -77,13 +84,14 @@ public:
     void setPinNum(uint32_t input, uint32_t output)
     {
         this->input_pin_ = input;
+        this->input_pin_list_.resize(input);
+
         this->output_pin_ = output;
+        this->output_pin_list_.resize(output);
     }
 
     // Node color
     Color node_color_;
-
-    std::vector<int32_t> pin_attr_list_;
 
     // Node title
     std::string title_;
@@ -97,6 +105,9 @@ public:
     // Number of output pin
     uint32_t output_pin_;
 
-    // Pin names
-    std::vector<const char*> pin_names_;
+    // Input pin list
+    std::vector<Pin> input_pin_list_;
+
+    // Output pin list
+    std::vector<Pin> output_pin_list_;
 };

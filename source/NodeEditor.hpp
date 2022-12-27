@@ -44,7 +44,7 @@ private:
     int32_t findAvailableID();
 
     // Search for available pin ID
-    std::vector<int32_t> assignAvailablePins(uint32_t pin_num);
+    void assignAvailablePins(std::vector<Pin>& pin_list);
 
 public:
     NodeBase* tmp_node_;
@@ -57,7 +57,7 @@ private:
     std::vector<int32_t> id_list_;
 
     // Using pin id list
-    std::vector<int32_t> pin_list_;
+    int32_t pin_id_;
 
     // Connected node pairs
     std::vector<Link> link_list_;
