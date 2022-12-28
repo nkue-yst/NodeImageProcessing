@@ -27,6 +27,7 @@ typedef enum
     NT_ImageSource,
     NT_Binarization,
     NT_GrayScaling,
+    NT_EdgeDetection,
 
     // ↓ MovieNode ↓
     __MovieNode,
@@ -51,6 +52,7 @@ public:
     }
 
     virtual void draw() = 0;
+    virtual void drawOptions() {}
 
     // Set node color
     void applyNodeColor()
@@ -75,7 +77,6 @@ public:
             200
         );
     }
-
     // Connected event
     void inputConnect(int32_t pin_id, NodeBase* node)
     {

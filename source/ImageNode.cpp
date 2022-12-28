@@ -4,6 +4,7 @@
 #include "imnodes.h"
 
 #include "BinarizationNode.hpp"
+#include "EdgeDetectionNode.hpp"
 #include "GrayScalingNode.hpp"
 #include "ImageSourceNode.hpp"
 
@@ -16,6 +17,9 @@ ImageNode* ImageNode::create(NodeType type)
 
     case NT_Binarization:
         return new BinarizationNode();
+
+    case NT_EdgeDetection:
+        return new EdgeDetectionNode();
     
     case NT_GrayScaling:
         return new GrayScalingNode();
@@ -38,7 +42,11 @@ void ImageNode::draw()
     ImNodes::EndNodeTitleBar();
 
     // Image data
-    ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+    ImGui::Image((void*)(uintptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+
+    // Option parts
+    this->drawOptions();
+    ImGui::Dummy(ImVec2(0.f, 10.f));
     
     // Input pins
     for (Pin& pin : this->input_pin_list_)

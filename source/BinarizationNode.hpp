@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GL/gl.h"
-
 #include "ImageNode.hpp"
 
 class BinarizationNode : public ImageNode

@@ -107,8 +107,7 @@ int main(int argc, char **argv)
 
     // Debug nodes
     NodeEditor::get().newImageNode(NT_ImageSource, "sample/github.png");
-    NodeEditor::get().newImageNode(NT_Binarization);
-    NodeEditor::get().newImageNode(NT_GrayScaling);
+    NodeEditor::get().newImageNode(NT_EdgeDetection);
 
     bool done = false;
     while (!done)
@@ -184,6 +183,12 @@ int main(int argc, char **argv)
                 if (ImGui::MenuItem("Binarization"))
                 {
                     NodeEditor::get().newImageNode(NT_Binarization);
+                }
+
+                // Create new EdgeDetectionNode
+                if (ImGui::MenuItem("EdgeDetection"))
+                {
+                    NodeEditor::get().newImageNode(NT_EdgeDetection);
                 }
 
                 // Create new GrayScalingNode

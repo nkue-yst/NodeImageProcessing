@@ -2,9 +2,6 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "imgui.h"
-#include "imnodes.h"
-
 BinarizationNode::BinarizationNode()
 {
     // Node setting

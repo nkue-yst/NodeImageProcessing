@@ -58,6 +58,7 @@ include_directories(${CMAKE_SOURCE_DIR}/source)
 set(NIP_SOURCES
 	${CMAKE_SOURCE_DIR}/source/main.cpp
     ${CMAKE_SOURCE_DIR}/source/BinarizationNode.cpp
+    ${CMAKE_SOURCE_DIR}/source/EdgeDetectionNode.cpp
     ${CMAKE_SOURCE_DIR}/source/GrayScalingNode.cpp
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
 	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
