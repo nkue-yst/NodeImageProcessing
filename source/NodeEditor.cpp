@@ -53,33 +53,32 @@ void NodeEditor::draw()
                     auto start_node = std::find_if(
                         this->node_list_.begin(),
                         this->node_list_.end(),
-                        [new_link](NodeBase* node) -> bool
+                        [old_link](NodeBase* node) -> bool
                     {
                         return std::find_if(
                             node->output_pin_list_.begin(),
                             node->output_pin_list_.end(),
-                            [new_link](Pin pin) -> bool
+                            [old_link](Pin pin) -> bool
                         {
-                            return new_link.start_attr == pin.id_;
+                            return (*old_link).start_attr == pin.id_;
                         }) != node->output_pin_list_.end();
                     });
 
                     auto end_node = std::find_if(
                         this->node_list_.begin(),
                         this->node_list_.end(),
-                        [new_link](NodeBase* node) -> bool
+                        [old_link](NodeBase* node) -> bool
                     {
                         return std::find_if(
                             node->input_pin_list_.begin(),
                             node->input_pin_list_.end(),
-                            [new_link](Pin pin) -> bool
+                            [old_link](Pin pin) -> bool
                         {
-                            return new_link.end_attr == pin.id_;
+                            return (*old_link).end_attr == pin.id_;
                         })!= node->input_pin_list_.end();
                     });
 
-                    std::cout << (*start_node)->title_ << ", " << (*end_node)->title_ << std::endl;
-
+                    (*start_node)->outputDisconnect(old_link->start_attr);
                     (*end_node)->inputDisconnect(old_link->end_attr);
                     this->link_list_.erase(old_link);
                 }
