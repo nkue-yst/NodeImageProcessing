@@ -15,11 +15,11 @@ public:
     int32_t id_;
     const char* name_;
 
-    class NodeBase* connected_node;
+    class NodeBase* connected_node_;
 };
 
 // Kind of node
-enum NodeType_
+typedef enum
 {
     // ↓ ImageNode ↓
     __ImageNode,
@@ -36,7 +36,7 @@ enum NodeType_
     // NT_AudioSourceNode,
 
     NT_UNDEFINED,
-} typedef NodeType;
+} NodeType;
 
 // Base class of connectable node
 class NodeBase
@@ -76,7 +76,47 @@ public:
     }
 
     // Connected event
-    virtual void connect(NodeBase* node) {}
+    void inputConnect(int32_t pin_id, NodeBase* node)
+    {
+        auto pin = std::find_if(
+            this->input_pin_list_.begin(),
+            this->input_pin_list_.end(),
+            [pin_id](Pin& pin) -> bool
+        {
+            return pin.id_ == pin_id;
+        });
+
+        (*pin).connected_node_ = node;
+    }
+
+    void outputConnect(int32_t pin_id, NodeBase* node)
+    {
+        auto pin = std::find_if(
+            this->output_pin_list_.begin(),
+            this->output_pin_list_.end(),
+            [pin_id](Pin& pin) -> bool
+        {
+            return pin.id_ == pin_id;
+        });
+
+        (*pin).connected_node_ = node;
+
+        this->update();
+    }
+
+    void update()
+    {
+        for (Pin& pin : this->output_pin_list_)
+        {
+            if (pin.connected_node_)
+            {
+                pin.connected_node_->updateData();
+                pin.connected_node_->update();
+            }
+        }
+    }
+
+    virtual void updateData() {}
 
     // Disconnected event
     virtual void disconnect(NodeBase* node) {}

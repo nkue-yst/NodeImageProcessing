@@ -88,7 +88,8 @@ void NodeEditor::draw()
                     })!= node->input_pin_list_.end();
                 });
 
-                (*end_node)->connect(*start_node);
+                (*end_node)->inputConnect(new_link.end_attr, (*start_node));
+                (*start_node)->outputConnect(new_link.start_attr, (*end_node));
             }
         }
     }

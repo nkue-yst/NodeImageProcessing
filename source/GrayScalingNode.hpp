@@ -9,7 +9,8 @@ class GrayScalingNode : public ImageNode
 public:
     GrayScalingNode();
 
-    void connect(NodeBase* node) override;
+    void updateData() override;
+
     void disconnect(NodeBase* node) override;
 
 private:

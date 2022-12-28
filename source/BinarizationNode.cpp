@@ -17,10 +17,10 @@ BinarizationNode::BinarizationNode()
     this->output_pin_list_.at(0).name_ = "Result";
 }
 
-void BinarizationNode::connect(NodeBase* node)
+void BinarizationNode::updateData()
 {
     // Read image data from previous node
-    this->image_data_cv_ = ((ImageNode*)node)->image_data_cv_;
+    this->image_data_cv_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;
     this->binarization();
     this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
 }

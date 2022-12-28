@@ -95,4 +95,7 @@ void ImageSourceNode::loadSource(const char* file_path)
 
     // Load image file for processing
     this->image_data_cv_ = cv::imread(file_path);
+
+    // Update child node
+    this->update();
 }
