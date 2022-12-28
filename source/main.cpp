@@ -203,7 +203,10 @@ int main(int argc, char **argv)
         // Draw dialog to select image file
         ImGuiFileDialog::Instance()->ManageGPUThumbnails();
 
-        if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey"))
+        ImVec2 dialog_max_size = ImVec2((float)win_width, (float)win_height);
+        ImVec2 dialog_min_size = ImVec2((float)win_width * 0.5f, (float)win_height * 0.5f);
+
+        if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey", ImGuiWindowFlags_NoCollapse, dialog_min_size, dialog_max_size))
         {
             if (ImGuiFileDialog::Instance()->IsOk())
             {
@@ -242,31 +245,6 @@ int main(int argc, char **argv)
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(win);
-
-        // Debug print
-        /*
-        for (auto& node : NodeEditor::get().node_list_)
-        {
-            std::cout << node->title_ << std::endl;
-
-            std::cout << "    input connected node:" << std::endl;
-            for (auto& pin : node->input_pin_list_)
-            {
-                if (pin.connected_node_)
-                    std::cout << "        " << pin.connected_node_->title_ << std::endl;
-            }
-
-            std::cout << "    output connected node:" << std::endl;
-            for (auto& pin : node->output_pin_list_)
-            {
-                if (pin.connected_node_)
-                    std::cout << "        " << pin.connected_node_->title_ << std::endl;
-            }
-
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-        */
     }
 
     // Clean up SDL
