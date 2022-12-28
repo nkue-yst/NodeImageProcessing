@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -87,6 +88,8 @@ public:
         });
 
         (*pin).connected_node_ = node;
+
+        this->update();
     }
 
     void outputConnect(int32_t pin_id, NodeBase* node)
@@ -100,26 +103,52 @@ public:
         });
 
         (*pin).connected_node_ = node;
+    }
 
+    // Disconnected event
+    void inputDisconnect(int32_t pin_id)
+    {
+        auto pin = std::find_if(
+            this->input_pin_list_.begin(),
+            this->input_pin_list_.end(),
+            [pin_id](Pin& pin) -> bool
+        {
+            return pin.id_ == pin_id;
+        });
+
+        (*pin).connected_node_ = nullptr;
         this->update();
     }
 
+    void outputDisconnect(int32_t pin_id)
+    {
+        auto pin = std::find_if(
+            this->output_pin_list_.begin(),
+            this->output_pin_list_.end(),
+            [pin_id](Pin& pin) -> bool
+        {
+            return pin.id_ == pin_id;
+        });
+
+        (*pin).connected_node_ = nullptr;
+    }
+
+    // Update all child node
     void update()
     {
+        this->updateData();
+
         for (Pin& pin : this->output_pin_list_)
         {
             if (pin.connected_node_)
             {
-                pin.connected_node_->updateData();
                 pin.connected_node_->update();
             }
         }
     }
 
+    // Update image, audio or video data
     virtual void updateData() {}
-
-    // Disconnected event
-    virtual void disconnect(NodeBase* node) {}
 
     int32_t getID() const { return this->id_; }
 

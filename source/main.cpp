@@ -106,8 +106,9 @@ int main(int argc, char **argv)
     ImVec4 bg_color = ImVec4(0.4f, 0.4f, 0.4f, 1.f);
 
     // Debug nodes
-    NodeEditor::get().newImageNode(NT_ImageSource);
+    NodeEditor::get().newImageNode(NT_ImageSource, "sample/github.png");
     NodeEditor::get().newImageNode(NT_Binarization);
+    NodeEditor::get().newImageNode(NT_GrayScaling);
 
     bool done = false;
     while (!done)
@@ -241,6 +242,31 @@ int main(int argc, char **argv)
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(win);
+
+        // Debug print
+        /*
+        for (auto& node : NodeEditor::get().node_list_)
+        {
+            std::cout << node->title_ << std::endl;
+
+            std::cout << "    input connected node:" << std::endl;
+            for (auto& pin : node->input_pin_list_)
+            {
+                if (pin.connected_node_)
+                    std::cout << "        " << pin.connected_node_->title_ << std::endl;
+            }
+
+            std::cout << "    output connected node:" << std::endl;
+            for (auto& pin : node->output_pin_list_)
+            {
+                if (pin.connected_node_)
+                    std::cout << "        " << pin.connected_node_->title_ << std::endl;
+            }
+
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        */
     }
 
     // Clean up SDL

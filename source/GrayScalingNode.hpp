@@ -11,8 +11,6 @@ public:
 
     void updateData() override;
 
-    void disconnect(NodeBase* node) override;
-
 private:
     // Execute grayscaling
     void grayscaling();

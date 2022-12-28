@@ -20,14 +20,21 @@ BinarizationNode::BinarizationNode()
 void BinarizationNode::updateData()
 {
     // Read image data from previous node
-    this->image_data_cv_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;
-    this->binarization();
-    this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
-}
-
-void BinarizationNode::disconnect(NodeBase* node)
-{
-    glDeleteTextures(1, &this->image_data_gl_);
+    if (this->input_pin_list_.at(0).connected_node_)
+    {
+        if (!static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_.empty())
+        {
+            this->image_data_cv_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;
+            this->binarization();
+            this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
+        }
+    }
+    else
+    {
+        cv::Mat mat = cv::Mat::zeros(100, 100, CV_8UC3);
+        this->image_data_cv_ = mat;
+        glDeleteTextures(1, &this->image_data_gl_);
+    }
 }
 
 void BinarizationNode::binarization()

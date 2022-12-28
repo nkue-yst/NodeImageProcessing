@@ -39,7 +39,7 @@ void NodeEditor::draw()
         if (ImNodes::IsLinkCreated(&new_link.start_attr, &new_link.end_attr))
         {
             {
-                auto iter = std::find_if(
+                auto old_link = std::find_if(
                     this->link_list_.begin(),
                     this->link_list_.end(),
                     [new_link](const Link& link) -> bool
@@ -48,9 +48,40 @@ void NodeEditor::draw()
                 });
 
                 // Disconnect old connection
-                if (iter != this->link_list_.end())
+                if (old_link != this->link_list_.end())
                 {
-                    this->link_list_.erase(iter);
+                    auto start_node = std::find_if(
+                        this->node_list_.begin(),
+                        this->node_list_.end(),
+                        [new_link](NodeBase* node) -> bool
+                    {
+                        return std::find_if(
+                            node->output_pin_list_.begin(),
+                            node->output_pin_list_.end(),
+                            [new_link](Pin pin) -> bool
+                        {
+                            return new_link.start_attr == pin.id_;
+                        }) != node->output_pin_list_.end();
+                    });
+
+                    auto end_node = std::find_if(
+                        this->node_list_.begin(),
+                        this->node_list_.end(),
+                        [new_link](NodeBase* node) -> bool
+                    {
+                        return std::find_if(
+                            node->input_pin_list_.begin(),
+                            node->input_pin_list_.end(),
+                            [new_link](Pin pin) -> bool
+                        {
+                            return new_link.end_attr == pin.id_;
+                        })!= node->input_pin_list_.end();
+                    });
+
+                    std::cout << (*start_node)->title_ << ", " << (*end_node)->title_ << std::endl;
+
+                    (*end_node)->inputDisconnect(old_link->end_attr);
+                    this->link_list_.erase(old_link);
                 }
 
                 // Connect new connection
@@ -135,7 +166,8 @@ void NodeEditor::draw()
                 }) != node->input_pin_list_.end();
             });
 
-            (*end_node)->disconnect(*start_node);
+            (*start_node)->outputDisconnect((*iter).start_attr);
+            (*end_node)->inputDisconnect((*iter).end_attr);
             this->link_list_.erase(iter);
         }
     }

@@ -49,10 +49,10 @@ private:
 public:
     NodeBase* tmp_node_;
 
-private:
     // Node list
     std::vector<class NodeBase*> node_list_;
 
+private:
     // Using node id list
     std::vector<int32_t> id_list_;
 
