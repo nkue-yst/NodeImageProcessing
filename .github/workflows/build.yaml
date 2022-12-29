@@ -1,0 +1,23 @@
+name: cmake-build
+on: [push]
+
+jobs:
+  build:
+    runs-on:
+      - ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      
+      - name: Install thirdparty
+        run: |
+          sudo apt install cmake make libsdl2-dev libsdl2-image-dev libopencv-dev
+
+      - name: Build
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make
