@@ -29,13 +29,13 @@ typedef enum
     NT_GrayScaling,
     NT_EdgeDetection,
 
-    // ↓ MovieNode ↓
-    __MovieNode,
-    // NT_MovieSourceNode,
+    // ↓ VideoNode ↓
+    __VideoNode,
+    NT_VideoSource,
 
     // ↓ AudioNode ↓
     __AudioNode,
-    // NT_AudioSourceNode,
+    // NT_AudioSource,
 
     NT_UNDEFINED,
 } NodeType;
@@ -77,6 +77,15 @@ public:
             200
         );
     }
+
+    // Draw title bar
+    void drawTitleBar()
+    {
+        ImNodes::BeginNodeTitleBar();
+        ImGui::TextUnformatted(this->title_.c_str());
+        ImNodes::EndNodeTitleBar();
+    }
+
     // Connected event
     void inputConnect(int32_t pin_id, NodeBase* node)
     {

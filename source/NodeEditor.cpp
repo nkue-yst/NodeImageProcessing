@@ -4,8 +4,8 @@
 
 #include "imnodes.h"
 
-#include "BinarizationNode.hpp"
 #include "ImageSourceNode.hpp"
+#include "VideoSourceNode.hpp"
 
 void NodeEditor::init()
 {
@@ -184,6 +184,24 @@ void NodeEditor::newImageNode(NodeType type, const char* file_path)
 
     if (type == NT_ImageSource)
         ((ImageSourceNode*)new_node)->loadSource(file_path);
+
+    // Add to list for management nodes
+    this->node_list_.push_back(new_node);
+    this->id_list_.push_back(new_node->id_);
+}
+
+void NodeEditor::newVideoNode(NodeType type, const char* file_path)
+{
+    // Generate new VideoNode
+    VideoNode* new_node = VideoNode::create(type);
+
+    // Node setting
+    new_node->id_ = this->findAvailableID();
+    this->assignAvailablePins(new_node->input_pin_list_);
+    this->assignAvailablePins(new_node->output_pin_list_);
+
+    if (type == NT_VideoSource)
+        ((VideoSourceNode*)new_node)->loadSource(file_path);
 
     // Add to list for management nodes
     this->node_list_.push_back(new_node);

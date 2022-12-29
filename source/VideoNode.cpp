@@ -1,51 +1,37 @@
-#include "ImageNode.hpp"
+#include "VideoNode.hpp"
 
-#include "imgui.h"
-#include "imnodes.h"
+#include "NodeBase.hpp"
+#include "VideoSourceNode.hpp"
 
-#include "BinarizationNode.hpp"
-#include "EdgeDetectionNode.hpp"
-#include "GrayScalingNode.hpp"
-#include "ImageSourceNode.hpp"
-
-ImageNode* ImageNode::create(NodeType type)
+VideoNode* VideoNode::create(NodeType type)
 {
     switch (type)
     {
-    case NT_ImageSource:
-        return new ImageSourceNode();
-
-    case NT_Binarization:
-        return new BinarizationNode();
-
-    case NT_EdgeDetection:
-        return new EdgeDetectionNode();
-    
-    case NT_GrayScaling:
-        return new GrayScalingNode();
+    case NT_VideoSource:
+        return new VideoSourceNode();
 
     default:
         return nullptr;
     }
 }
 
-void ImageNode::draw()
+void VideoNode::draw()
 {
     // Set style
     this->applyNodeColor();
 
     ImNodes::BeginNode(this->getID());
-    
+
     // Title bar
     this->drawTitleBar();
 
-    // Image data
-    ImGui::Image((void*)(uintptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+    // Frame data
+    ImGui::Image((void*)(uintptr_t)this->frame_data_gl_, ImVec2(100.f, 100.f));
 
     // Option parts
     this->drawOptions();
     ImGui::Dummy(ImVec2(0.f, 10.f));
-    
+
     // Input pins
     for (Pin& pin : this->input_pin_list_)
     {
@@ -67,7 +53,7 @@ void ImageNode::draw()
     ImNodes::EndNode();
 }
 
-GLuint ImageNode::convertCVmatToGLtexture(cv::Mat* mat)
+GLuint VideoNode::convertCVmatToGLtexture(cv::Mat* mat)
 {
     GLuint texture_id;
 

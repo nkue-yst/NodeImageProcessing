@@ -63,6 +63,8 @@ set(NIP_SOURCES
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
 	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
+    ${CMAKE_SOURCE_DIR}/source/VideoNode.cpp
+    ${CMAKE_SOURCE_DIR}/source/VideoSourceNode.cpp
 )
 add_executable(${PROJECT_NAME} ${NIP_SOURCES} ${IMGUI_SOURCES} ${IMNODES_SOURCES} ${IMGUI_FILE_DIALOG_SOURCES})
 target_link_libraries(${PROJECT_NAME} OpenGL::GL ${OpenCV_LIBRARIES} SDL2::Core SDL2::Main)

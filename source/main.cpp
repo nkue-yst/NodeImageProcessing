@@ -13,6 +13,7 @@
 #include "ImageSourceNode.hpp"
 #include "NodeBase.hpp"
 #include "NodeEditor.hpp"
+#include "VideoSourceNode.hpp"
 
 int main(int argc, char **argv)
 {
@@ -106,8 +107,7 @@ int main(int argc, char **argv)
     ImVec4 bg_color = ImVec4(0.4f, 0.4f, 0.4f, 1.f);
 
     // Debug nodes
-    NodeEditor::get().newImageNode(NT_ImageSource, "sample/github.png");
-    NodeEditor::get().newImageNode(NT_EdgeDetection);
+    //NodeEditor::get().newVideoNode(NT_VideoSource, "sample/a.mp4");
 
     bool done = false;
     while (!done)
@@ -155,6 +155,13 @@ int main(int argc, char **argv)
                 {
                     const char* filters = "Image files (*.png *.jpg *.jpeg){.png,.jpg,.jpeg}";
                     ImGuiFileDialog::Instance()->OpenDialog("SelectImageDlgKey", "Select Image File", filters, ".");
+                }
+
+                // Open dialog to select video file
+                if (ImGui::MenuItem("Open Video File"))
+                {
+                    const char* filters = "Video files (*.mp4){.mp4}";
+                    ImGuiFileDialog::Instance()->OpenDialog("SelectVideoDlgKey", "Select Video File", filters, ".");
                 }
 
                 // Exit button
@@ -218,10 +225,26 @@ int main(int argc, char **argv)
                 std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
                 std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
 
-                if (NodeEditor::get().tmp_node_)
+                if (dynamic_cast<ImageSourceNode*>(NodeEditor::get().tmp_node_))
                     ((ImageSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
                 else
                     NodeEditor::get().newImageNode(NT_ImageSource, file_path.c_str());
+            }
+            
+            ImGuiFileDialog::Instance()->Close();
+        }
+
+        if (ImGuiFileDialog::Instance()->Display("SelectVideoDlgKey", ImGuiWindowFlags_NoCollapse, dialog_min_size, dialog_max_size))
+        {
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                if (dynamic_cast<VideoSourceNode*>(NodeEditor::get().tmp_node_))
+                    ((VideoSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
+                else
+                    NodeEditor::get().newVideoNode(NT_VideoSource, file_path.c_str());
             }
             
             ImGuiFileDialog::Instance()->Close();

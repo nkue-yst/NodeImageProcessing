@@ -39,6 +39,9 @@ public:
     // Create new ImageNode and add to node list
     void newImageNode(NodeType type, const char* file_path = nullptr);
 
+    // Create new VideoNode and add to node list
+    void newVideoNode(NodeType type, const char* file_path = nullptr);
+
 private:
     // Search for available node ID
     int32_t findAvailableID();
