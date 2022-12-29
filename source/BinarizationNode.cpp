@@ -21,8 +21,14 @@ void BinarizationNode::updateData()
     {
         if (!static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_.empty())
         {
+            // Update cv frame data
+            this->image_data_cv_.release();
             this->image_data_cv_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;
+            
             this->binarization();
+
+            // Update gl texture frame data
+            glDeleteTextures(sizeof(this->image_data_gl_), &this->image_data_gl_);
             this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
         }
     }

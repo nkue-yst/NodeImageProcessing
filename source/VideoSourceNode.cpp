@@ -39,14 +39,22 @@ void VideoSourceNode::draw()
     // Frame data
     if (this->video_.isOpened())
     {
+        // Update cv::Mat frame data
+        this->image_data_cv_.release();
         this->video_.read(this->image_data_cv_);
+
         if (this->image_data_cv_.empty())
         {
             this->video_.set(cv::CAP_PROP_POS_FRAMES, 0);
             this->video_.read(this->image_data_cv_);
         }
-        glDeleteTextures(sizeof(this->image_data_gl_), &this->image_data_gl_);
+
+        // Update GL texture frame data
+        glDeleteTextures(1, &this->image_data_gl_);
         this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
+
+        // Update child node
+        this->update();
     }
     ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
 
@@ -61,9 +69,6 @@ void VideoSourceNode::draw()
     }
 
     ImNodes::EndNode();
-
-    // Update child node
-    this->update();
 }
 
 void VideoSourceNode::loadSource(const char* file_path)

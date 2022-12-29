@@ -26,6 +26,7 @@ void EdgeDetectionNode::updateData()
         if (!static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_.empty())
         {
             this->original_image_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;
+
             this->edgeDetection();
         }
     }
@@ -69,5 +70,6 @@ void EdgeDetectionNode::edgeDetection()
 
     // Edge detection by canny
     cv::Canny(this->image_data_cv_, this->image_data_cv_, this->threshold[0], this->threshold[1]);
+    glDeleteTextures(1, &this->image_data_gl_);
     this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
 }
