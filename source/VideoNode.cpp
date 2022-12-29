@@ -26,7 +26,7 @@ void VideoNode::draw()
     this->drawTitleBar();
 
     // Frame data
-    ImGui::Image((void*)(uintptr_t)this->frame_data_gl_, ImVec2(100.f, 100.f));
+    ImGui::Image((void*)(uintptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
 
     // Option parts
     this->drawOptions();
@@ -51,24 +51,4 @@ void VideoNode::draw()
     }
 
     ImNodes::EndNode();
-}
-
-GLuint VideoNode::convertCVmatToGLtexture(cv::Mat* mat)
-{
-    GLuint texture_id;
-
-    glGenTextures(1, &texture_id);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-    cv::cvtColor((*mat), (*mat), cv::COLOR_RGB2BGR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (*mat).cols, (*mat).rows, 0, GL_RGB, GL_UNSIGNED_BYTE, (*mat).ptr());
-
-    return texture_id;
 }

@@ -37,35 +37,33 @@ void VideoSourceNode::draw()
     }
 
     // Frame data
-    this->video_.read(this->frame_data_cv_);
-    if (this->frame_data_cv_.empty())
+    if (this->video_.isOpened())
     {
-        this->video_.set(cv::CAP_PROP_POS_FRAMES, 0);
-        this->video_.read(this->frame_data_cv_);
+        this->video_.read(this->image_data_cv_);
+        if (this->image_data_cv_.empty())
+        {
+            this->video_.set(cv::CAP_PROP_POS_FRAMES, 0);
+            this->video_.read(this->image_data_cv_);
+        }
+        glDeleteTextures(sizeof(this->image_data_gl_), &this->image_data_gl_);
+        this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
     }
-    this->frame_data_gl_ = this->convertCVmatToGLtexture(&this->frame_data_cv_);
-    ImGui::Image((void*)(intptr_t)this->frame_data_gl_, ImVec2(100.f, 100.f));
-    
-    // Input pins
-    uint32_t i = 0;
-    for (; i < this->input_pin_; ++i)
-    {
-        ImNodes::BeginInputAttribute(this->input_pin_list_.at(i).id_);
-        ImGui::Text(this->input_pin_list_.at(i).name_, NULL);
-        ImNodes::EndInputAttribute();
-    }
+    ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
 
     // Output pins
-    for (; i < this->input_pin_ + this->output_pin_; ++i)
+    for (Pin& pin : this->output_pin_list_)
     {
-        ImNodes::BeginOutputAttribute(this->output_pin_list_.at(i).id_);
-        const float text_width = ImGui::CalcTextSize(this->output_pin_list_.at(i).name_).x;
+        ImNodes::BeginOutputAttribute(pin.id_);
+        const float text_width = ImGui::CalcTextSize(pin.name_).x;
         ImGui::Indent(100.f - text_width);
-        ImGui::Text(this->output_pin_list_.at(i).name_, NULL);
+        ImGui::Text(pin.name_, NULL);
         ImNodes::EndInputAttribute();
     }
 
     ImNodes::EndNode();
+
+    // Update child node
+    this->update();
 }
 
 void VideoSourceNode::loadSource(const char* file_path)
@@ -73,7 +71,7 @@ void VideoSourceNode::loadSource(const char* file_path)
     // When file_path is null, generate empty image
     if (!file_path)
     {
-        this->frame_data_cv_ = cv::Mat::zeros(100, 100, CV_8UC3);
+        this->image_data_cv_ = cv::Mat::zeros(100, 100, CV_8UC3);
         return;
     }
 
@@ -97,8 +95,8 @@ void VideoSourceNode::loadSource(const char* file_path)
 
     // Get first frame
     this->video_.set(cv::CAP_PROP_POS_FRAMES, 0);
-    this->video_.read(this->frame_data_cv_);
-    this->frame_data_gl_ = this->convertCVmatToGLtexture(&this->frame_data_cv_);
+    this->video_.read(this->image_data_cv_);
+    this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
 
     // Update child node
     this->update();

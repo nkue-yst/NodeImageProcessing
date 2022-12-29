@@ -178,12 +178,18 @@ int main(int argc, char **argv)
         // Edit menu
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("ImageProcessing"))
+            if (ImGui::BeginMenu("Image/Video"))
             {
                 // Create new ImageNode
                 if (ImGui::MenuItem("ImageSource"))
                 {
                     NodeEditor::get().newImageNode(NT_ImageSource);
+                }
+
+                // Create new VideoNode
+                if (ImGui::MenuItem("VideoSource"))
+                {
+                    NodeEditor::get().newVideoNode(NT_VideoSource);
                 }
 
                 // Create new BinariztionNode
@@ -218,22 +224,6 @@ int main(int argc, char **argv)
         ImVec2 dialog_max_size = ImVec2((float)win_width, (float)win_height);
         ImVec2 dialog_min_size = ImVec2((float)win_width * 0.5f, (float)win_height * 0.5f);
 
-        if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey", ImGuiWindowFlags_NoCollapse, dialog_min_size, dialog_max_size))
-        {
-            if (ImGuiFileDialog::Instance()->IsOk())
-            {
-                std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
-
-                if (dynamic_cast<ImageSourceNode*>(NodeEditor::get().tmp_node_))
-                    ((ImageSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
-                else
-                    NodeEditor::get().newImageNode(NT_ImageSource, file_path.c_str());
-            }
-            
-            ImGuiFileDialog::Instance()->Close();
-        }
-
         if (ImGuiFileDialog::Instance()->Display("SelectVideoDlgKey", ImGuiWindowFlags_NoCollapse, dialog_min_size, dialog_max_size))
         {
             if (ImGuiFileDialog::Instance()->IsOk())
@@ -245,6 +235,22 @@ int main(int argc, char **argv)
                     ((VideoSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
                 else
                     NodeEditor::get().newVideoNode(NT_VideoSource, file_path.c_str());
+            }
+            
+            ImGuiFileDialog::Instance()->Close();
+        }
+
+        if (ImGuiFileDialog::Instance()->Display("SelectImageDlgKey", ImGuiWindowFlags_NoCollapse, dialog_min_size, dialog_max_size))
+        {
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string current_path = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                if (dynamic_cast<ImageSourceNode*>(NodeEditor::get().tmp_node_))
+                    ((ImageSourceNode*)NodeEditor::get().tmp_node_)->loadSource(file_path.c_str());
+                else
+                    NodeEditor::get().newImageNode(NT_ImageSource, file_path.c_str());
             }
             
             ImGuiFileDialog::Instance()->Close();
