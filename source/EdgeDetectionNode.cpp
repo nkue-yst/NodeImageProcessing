@@ -45,6 +45,13 @@ void EdgeDetectionNode::drawOptions()
     ImGui::PushItemWidth(100.f);
     if (ImGui::SliderInt2("", this->threshold, 0, 255))
     {
+        if (this->threshold[0] > this->threshold[1])
+        {
+            int32_t tmp = this->threshold[0];
+            this->threshold[0] = this->threshold[1];
+            this->threshold[1] = tmp;
+        }
+
         this->edgeDetection();
         this->update();
     }
