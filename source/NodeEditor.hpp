@@ -47,7 +47,8 @@ private:
     int32_t findAvailableID();
 
     // Search for available pin ID
-    void assignAvailablePins(std::vector<Pin>& pin_list);
+    void assignAvailablePins(std::vector<InputPin>& pin_list);
+    void assignAvailablePins(std::vector<OutputPin>& pin_list);
 
 public:
     NodeBase* tmp_node_;

@@ -15,8 +15,18 @@ struct Pin
 public:
     int32_t id_;
     const char* name_;
+};
 
+struct InputPin : public Pin
+{
+public:
     class NodeBase* connected_node_;
+};
+
+struct OutputPin : public Pin
+{
+public:
+    std::vector<class NodeBase*> connected_node_list_;
 };
 
 // Kind of node
@@ -112,7 +122,7 @@ public:
             return pin.id_ == pin_id;
         });
 
-        (*pin).connected_node_ = node;
+        (*pin).connected_node_list_.push_back(node);
     }
 
     // Disconnected event
@@ -140,7 +150,8 @@ public:
             return pin.id_ == pin_id;
         });
 
-        (*pin).connected_node_ = nullptr;
+        //(*pin).connected_node_ = nullptr;
+        (*pin).connected_node_list_.clear();
     }
 
     // Update all child node
@@ -148,11 +159,11 @@ public:
     {
         this->updateData();
 
-        for (Pin& pin : this->output_pin_list_)
+        for (OutputPin& pin : this->output_pin_list_)
         {
-            if (pin.connected_node_)
+            for (auto& node : pin.connected_node_list_)
             {
-                pin.connected_node_->update();
+                node->update();
             }
         }
     }
@@ -187,8 +198,8 @@ public:
     uint32_t output_pin_;
 
     // Input pin list
-    std::vector<Pin> input_pin_list_;
+    std::vector<InputPin> input_pin_list_;
 
     // Output pin list
-    std::vector<Pin> output_pin_list_;
+    std::vector<OutputPin> output_pin_list_;
 };

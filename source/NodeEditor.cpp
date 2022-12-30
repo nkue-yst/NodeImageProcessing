@@ -222,7 +222,15 @@ int32_t NodeEditor::findAvailableID()
     return -1;
 }
 
-void NodeEditor::assignAvailablePins(std::vector<Pin>& pin_list)
+void NodeEditor::assignAvailablePins(std::vector<InputPin>& pin_list)
+{
+    for (Pin& pin : pin_list)
+    {
+        pin.id_ = this->pin_id_++;
+    }
+}
+
+void NodeEditor::assignAvailablePins(std::vector<OutputPin>& pin_list)
 {
     for (Pin& pin : pin_list)
     {
