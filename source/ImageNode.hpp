@@ -20,11 +20,11 @@ protected:
 
 public:
     // Image data for drawing
-    GLuint image_data_gl_;
+    GLuint image_data_gl_ = (GLuint)(uintptr_t)nullptr;
 
     // Image data for processing
     cv::Mat image_data_cv_;
 
-    int32_t width_;
-    int32_t height_;
+    int32_t width_ = 100;
+    int32_t height_ = 100;
 };

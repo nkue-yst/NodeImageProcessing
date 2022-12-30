@@ -32,7 +32,7 @@ void BinarizationNode::updateData()
             this->binarization();
 
             // Update gl texture frame data
-            glDeleteTextures(sizeof(this->image_data_gl_), &this->image_data_gl_);
+            glDeleteTextures(1, &this->image_data_gl_);
             this->image_data_gl_ = this->convertCVmatToGLtexture(&this->image_data_cv_);
         }
     }
