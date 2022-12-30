@@ -56,7 +56,7 @@ void VideoSourceNode::draw()
         // Update child node
         this->update();
     }
-    ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+    this->drawImage();
 
     // Output pins
     for (Pin& pin : this->output_pin_list_)
@@ -81,8 +81,6 @@ void VideoSourceNode::loadSource(const char* file_path)
     }
 
     // Load image file
-    int32_t width = 0;
-    int32_t height = 0;
     int32_t max_frame = 0;
     int32_t fps = 0;
 
@@ -93,10 +91,16 @@ void VideoSourceNode::loadSource(const char* file_path)
         return;
     }
 
-    width     = this->video_.get(cv::CAP_PROP_FRAME_WIDTH);
-    height    = this->video_.get(cv::CAP_PROP_FRAME_HEIGHT);
+    this->width_       = this->video_.get(cv::CAP_PROP_FRAME_WIDTH);
+    this->height_      = this->video_.get(cv::CAP_PROP_FRAME_HEIGHT);
+
     max_frame = this->video_.get(cv::CAP_PROP_FRAME_COUNT);
     fps       = this->video_.get(cv::CAP_PROP_FPS);
+
+    // Set drawing size
+    float resize_rate = 100.f / std::max(this->width_, this->height_);
+    this->width_  *= resize_rate;
+    this->height_ *= resize_rate;
 
     // Get first frame
     this->video_.set(cv::CAP_PROP_POS_FRAMES, 0);

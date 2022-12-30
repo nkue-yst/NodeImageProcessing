@@ -40,7 +40,7 @@ void ImageNode::draw()
     this->drawTitleBar();
 
     // Image data
-    ImGui::Image((void*)(uintptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+    this->drawImage();
 
     // Option parts
     this->drawOptions();
@@ -65,6 +65,11 @@ void ImageNode::draw()
     }
 
     ImNodes::EndNode();
+}
+
+void ImageNode::drawImage()
+{
+    ImGui::Image((void*)(uintptr_t)this->image_data_gl_, ImVec2(this->width_, this->height_));
 }
 
 GLuint ImageNode::convertCVmatToGLtexture(cv::Mat* mat)

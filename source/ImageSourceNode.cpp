@@ -40,7 +40,7 @@ void ImageSourceNode::draw()
     }
 
     // Image data
-    ImGui::Image((void*)(intptr_t)this->image_data_gl_, ImVec2(100.f, 100.f));
+    this->drawImage();
     
     // Input pins
     uint32_t i = 0;
@@ -74,9 +74,7 @@ void ImageSourceNode::loadSource(const char* file_path)
     }
 
     // Load image file
-    int32_t width = 0;
-    int32_t height = 0;
-    uint8_t* image_data = stbi_load(file_path, &width, &height, NULL, 4);
+    uint8_t* image_data = stbi_load(file_path, &this->width_, &this->height_, NULL, 4);
 
     // Create OpenGL texture identifier
     GLuint image_texture;
@@ -88,13 +86,18 @@ void ImageSourceNode::loadSource(const char* file_path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Upload pixels into texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width_, this->height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
     stbi_image_free(image_data);
 
     this->image_data_gl_ = image_texture;
 
     // Load image file for processing
     this->image_data_cv_ = cv::imread(file_path);
+        
+    // Set drawing size
+    float resize_rate = 100.f / std::max(this->width_, this->height_);
+    this->width_  *= resize_rate;
+    this->height_ *= resize_rate;
 
     // Update child node
     this->update();

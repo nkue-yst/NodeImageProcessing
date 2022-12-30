@@ -14,6 +14,8 @@ public:
     virtual void draw() override;
 
 protected:
+    void drawImage();
+
     GLuint convertCVmatToGLtexture(cv::Mat* mat);
 
 public:
@@ -22,4 +24,8 @@ public:
 
     // Image data for processing
     cv::Mat image_data_cv_;
+
+protected:
+    int32_t width_;
+    int32_t height_;
 };
