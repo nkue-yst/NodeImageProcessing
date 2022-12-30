@@ -23,6 +23,10 @@ void EdgeDetectionNode::updateData()
     // Read image data from previous node
     if (this->input_pin_list_.at(0).connected_node_)
     {
+        // Set drawing size
+        this->width_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->width_;
+        this->height_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->height_;
+
         if (!static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_.empty())
         {
             this->original_image_ = static_cast<ImageNode*>(this->input_pin_list_.at(0).connected_node_)->image_data_cv_;

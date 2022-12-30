@@ -25,7 +25,6 @@ public:
     // Image data for processing
     cv::Mat image_data_cv_;
 
-protected:
     int32_t width_;
     int32_t height_;
 };
