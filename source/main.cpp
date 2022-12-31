@@ -126,6 +126,34 @@ int main(int argc, char **argv)
             {
                 done = true;
             }
+            else if (ev.key.type == SDL_KEYDOWN)
+            {
+                if (ev.key.keysym.scancode == SDL_SCANCODE_BACKSPACE || ev.key.keysym.scancode == SDL_SCANCODE_DELETE)
+                {
+                    const uint32_t selected_node_num = ImNodes::NumSelectedNodes();
+                    if (selected_node_num > 0)
+                    {
+                        // Get selected nodes
+                        std::vector<int32_t> selected_node_id;
+                        selected_node_id.resize(selected_node_num);
+                        ImNodes::GetSelectedNodes(selected_node_id.data());
+
+                        for (int32_t id : selected_node_id)
+                        {
+                            auto node_iter = std::find_if(
+                                NodeEditor::get().node_list_.begin(),
+                                NodeEditor::get().node_list_.end(),
+                                [id](NodeBase* node)
+                                {
+                                    return id == node->id_;
+                                }
+                            );
+
+                            NodeEditor::get().deleteNode(*node_iter);
+                        }
+                    }
+                }
+            }
         }
 
         // Update main window size

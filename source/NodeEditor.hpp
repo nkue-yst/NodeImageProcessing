@@ -8,7 +8,9 @@
 struct Link
 {
     int32_t id;
-    int32_t start_attr, end_attr;
+
+    int32_t start_pin_id;    // Start pin id
+    int32_t end_pin_id;      // End pin id
 };
 
 class NodeEditor
@@ -42,13 +44,34 @@ public:
     // Create new VideoNode and add to node list
     void newVideoNode(NodeType type, const char* file_path = nullptr);
 
+    // Destroy node
+    void deleteNode(NodeBase* node)
+    {
+        this->disconnectLinks(node);
+        
+        auto node_iter = std::find_if(
+            this->node_list_.begin(),
+            this->node_list_.end(),
+            [node](NodeBase* a_node)
+            {
+                return node->id_ == a_node->id_;
+            }
+        );
+        this->node_list_.erase(node_iter);
+    }
+
 private:
-    // Search for available node ID
-    int32_t findAvailableID();
+    // Disconnect links by link id
+    void disconnectLinks(int32_t* link_id);
+
+    // Disconnect links by iterator
+    void disconnectLinks(std::vector<Link>::iterator iter);
+
+    // Disconnect links by node
+    void disconnectLinks(NodeBase* node);
 
     // Search for available pin ID
-    void assignAvailablePins(std::vector<InputPin>& pin_list);
-    void assignAvailablePins(std::vector<OutputPin>& pin_list);
+    void assignAvailablePins(std::vector<Pin>& pin_list);
 
 public:
     NodeBase* tmp_node_;
@@ -56,13 +79,13 @@ public:
     // Node list
     std::vector<class NodeBase*> node_list_;
 
+    // Connected node pairs
+    std::vector<Link> link_list_;
+
 private:
     // Using node id list
-    std::vector<int32_t> id_list_;
+    int32_t node_id_;
 
     // Using pin id list
     int32_t pin_id_;
-
-    // Connected node pairs
-    std::vector<Link> link_list_;
 };

@@ -27,7 +27,7 @@ void NodeEditor::draw()
     // Draw connect lines
     for (const Link& link : this->link_list_)
     {
-        ImNodes::Link(link.id, link.start_attr, link.end_attr);
+        ImNodes::Link(link.id, link.start_pin_id, link.end_pin_id);
     }
 
     ImNodes::EndNodeEditor();
@@ -36,90 +36,69 @@ void NodeEditor::draw()
     {
         static int32_t link_index = 0;
         Link new_link;
-        if (ImNodes::IsLinkCreated(&new_link.start_attr, &new_link.end_attr))
+        if (ImNodes::IsLinkCreated(&new_link.start_pin_id, &new_link.end_pin_id))
         {
             {
+                // Find connected link
                 auto old_link = std::find_if(
                     this->link_list_.begin(),
                     this->link_list_.end(),
                     [new_link](const Link& link) -> bool
-                {
-                    return link.end_attr == new_link.end_attr;
-                });
+                    {
+                        return link.end_pin_id == new_link.end_pin_id;
+                    }
+                );
 
-                // Disconnect old connection
+                // Disconnect connected link if exists
                 if (old_link != this->link_list_.end())
                 {
-                    auto start_node = std::find_if(
-                        this->node_list_.begin(),
-                        this->node_list_.end(),
-                        [old_link](NodeBase* node) -> bool
-                    {
-                        return std::find_if(
-                            node->output_pin_list_.begin(),
-                            node->output_pin_list_.end(),
-                            [old_link](Pin pin) -> bool
-                        {
-                            return (*old_link).start_attr == pin.id_;
-                        }) != node->output_pin_list_.end();
-                    });
-
-                    auto end_node = std::find_if(
-                        this->node_list_.begin(),
-                        this->node_list_.end(),
-                        [old_link](NodeBase* node) -> bool
-                    {
-                        return std::find_if(
-                            node->input_pin_list_.begin(),
-                            node->input_pin_list_.end(),
-                            [old_link](Pin pin) -> bool
-                        {
-                            return (*old_link).end_attr == pin.id_;
-                        })!= node->input_pin_list_.end();
-                    });
-
-                    (*start_node)->outputDisconnect(old_link->start_attr, *end_node);
-                    (*end_node)->inputDisconnect(old_link->end_attr);
-                    this->link_list_.erase(old_link);
+                    this->disconnectLinks(old_link);
                 }
 
-                // Connect new connection
+                // Connect new link
                 new_link.id = link_index++;
                 this->link_list_.push_back(new_link);
             }
 
-            // Call connected event
+            // Connected event
             {
+                // Find start node
                 auto start_node = std::find_if(
                     this->node_list_.begin(),
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
-                {
-                    return std::find_if(
-                        node->output_pin_list_.begin(),
-                        node->output_pin_list_.end(),
-                        [new_link](Pin pin) -> bool
                     {
-                        return new_link.start_attr == pin.id_;
-                    }) != node->output_pin_list_.end();
-                });
+                        return std::find_if(
+                            node->output_pin_list_.begin(),
+                            node->output_pin_list_.end(),
+                            [new_link](Pin pin) -> bool
+                            {
+                                return new_link.start_pin_id == pin.id_;
+                            }
+                        ) != node->output_pin_list_.end();
+                    }
+                );
 
+                // Find end node
                 auto end_node = std::find_if(
                     this->node_list_.begin(),
                     this->node_list_.end(),
                     [new_link](NodeBase* node) -> bool
-                {
-                    return std::find_if(
-                        node->input_pin_list_.begin(),
-                        node->input_pin_list_.end(),
-                        [new_link](Pin pin) -> bool
                     {
-                        return new_link.end_attr == pin.id_;
-                    })!= node->input_pin_list_.end();
-                });
+                        return std::find_if(
+                            node->input_pin_list_.begin(),
+                            node->input_pin_list_.end(),
+                            [new_link](Pin pin) -> bool
+                            {
+                                return new_link.end_pin_id == pin.id_;
+                            }
+                        )!= node->input_pin_list_.end();
+                    }
+                );
 
-                (*end_node)->inputConnect(new_link.end_attr, (*start_node));
-                (*start_node)->outputConnect(new_link.start_attr, (*end_node));
+                // Call connected event
+                (*end_node)->inputConnect(new_link.end_pin_id, (*start_node));
+                (*start_node)->outputConnect(new_link.start_pin_id, (*end_node));
             }
         }
     }
@@ -129,45 +108,7 @@ void NodeEditor::draw()
         int32_t link_id;
         if (ImNodes::IsLinkDestroyed(&link_id))
         {
-            auto iter = std::find_if(
-                this->link_list_.begin(),
-                this->link_list_.end(),
-                [link_id](const Link& link) -> bool
-            {
-                return link.id == link_id;
-            });
-
-            auto start_node = std::find_if(
-                this->node_list_.begin(),
-                this->node_list_.end(),
-                [link_id, iter](NodeBase* node) -> bool
-            {
-                return std::find_if(
-                    node->output_pin_list_.begin(),
-                    node->output_pin_list_.end(),
-                    [link_id, iter](Pin pin) -> bool
-                {
-                    return (*iter).start_attr == pin.id_;
-                }) != node->output_pin_list_.end();
-            });
-
-            auto end_node = std::find_if(
-                this->node_list_.begin(),
-                this->node_list_.end(),
-                [link_id, iter](NodeBase* node) -> bool
-            {
-                return std::find_if(
-                    node->input_pin_list_.begin(),
-                    node->input_pin_list_.end(),
-                    [link_id, iter](Pin pin) -> bool
-                {
-                    return (*iter).end_attr == pin.id_;
-                }) != node->input_pin_list_.end();
-            });
-
-            (*start_node)->outputDisconnect((*iter).start_attr, *end_node);
-            (*end_node)->inputDisconnect((*iter).end_attr);
-            this->link_list_.erase(iter);
+            this->disconnectLinks(&link_id);
         }
     }
 }
@@ -178,7 +119,7 @@ void NodeEditor::newImageNode(NodeType type, const char* file_path)
     ImageNode* new_node = ImageNode::create(type);
     
     // Node setting
-    new_node->id_ = this->findAvailableID();
+    new_node->id_ = this->node_id_++;
     this->assignAvailablePins(new_node->input_pin_list_);
     this->assignAvailablePins(new_node->output_pin_list_);
 
@@ -187,7 +128,6 @@ void NodeEditor::newImageNode(NodeType type, const char* file_path)
 
     // Add to list for management nodes
     this->node_list_.push_back(new_node);
-    this->id_list_.push_back(new_node->id_);
 }
 
 void NodeEditor::newVideoNode(NodeType type, const char* file_path)
@@ -196,7 +136,7 @@ void NodeEditor::newVideoNode(NodeType type, const char* file_path)
     VideoNode* new_node = VideoNode::create(type);
 
     // Node setting
-    new_node->id_ = this->findAvailableID();
+    new_node->id_ = this->node_id_++;
     this->assignAvailablePins(new_node->input_pin_list_);
     this->assignAvailablePins(new_node->output_pin_list_);
 
@@ -205,32 +145,180 @@ void NodeEditor::newVideoNode(NodeType type, const char* file_path)
 
     // Add to list for management nodes
     this->node_list_.push_back(new_node);
-    this->id_list_.push_back(new_node->id_);
 }
 
-int32_t NodeEditor::findAvailableID()
+void NodeEditor::disconnectLinks(int32_t* link_id)
 {
-    for (int32_t i = 0; i < INT32_MAX; ++i)
-    {
-        if (!(std::find(this->id_list_.begin(), this->id_list_.end(), i) != this->id_list_.end()))
+    // Find link iterator
+    auto iter = std::find_if(
+        this->link_list_.begin(),
+        this->link_list_.end(),
+        [link_id](const Link& link) -> bool
         {
-            return i;
+            return link.id == *link_id;
+        }
+    );
+
+    // Find start node
+    auto start_node = std::find_if(
+        this->node_list_.begin(),
+        this->node_list_.end(),
+        [iter](NodeBase* node) -> bool
+        {
+            return std::find_if(
+                node->output_pin_list_.begin(),
+                node->output_pin_list_.end(),
+                [iter](Pin pin) -> bool
+                {
+                    return (*iter).start_pin_id == pin.id_;
+                }
+            ) != node->output_pin_list_.end();
+        }
+    );
+
+    // Find end node
+    auto end_node = std::find_if(
+        this->node_list_.begin(),
+        this->node_list_.end(),
+        [iter](NodeBase* node) -> bool
+        {
+            return std::find_if(
+                node->input_pin_list_.begin(),
+                node->input_pin_list_.end(),
+                [iter](Pin pin) -> bool
+                {
+                    return (*iter).end_pin_id == pin.id_;
+                }
+            ) != node->input_pin_list_.end();
+        }
+    );
+
+    // Call disconnected event
+    (*start_node)->outputDisconnect((*iter).start_pin_id, *end_node);
+    (*end_node)->inputDisconnect((*iter).end_pin_id, *start_node);
+    this->link_list_.erase(iter);
+}
+
+void NodeEditor::disconnectLinks(std::vector<Link>::iterator iter)
+{
+    // Find start node
+    auto start_node = std::find_if(
+        this->node_list_.begin(),
+        this->node_list_.end(),
+        [iter](NodeBase* node) -> bool
+        {
+            return std::find_if(
+                node->output_pin_list_.begin(),
+                node->output_pin_list_.end(),
+                [iter](Pin pin) -> bool
+                {
+                    return (*iter).start_pin_id == pin.id_;
+                }
+            ) != node->output_pin_list_.end();
+        }
+    );
+
+    // Find end node
+    auto end_node = std::find_if(
+        this->node_list_.begin(),
+        this->node_list_.end(),
+        [iter](NodeBase* node) -> bool
+        {
+            return std::find_if(
+                node->input_pin_list_.begin(),
+                node->input_pin_list_.end(),
+                [iter](Pin pin) -> bool
+                {
+                    return (*iter).end_pin_id == pin.id_;
+                }
+            ) != node->input_pin_list_.end();
+        }
+    );
+
+    // Call disconnected event
+    (*start_node)->outputDisconnect((*iter).start_pin_id, *end_node);
+    (*end_node)->inputDisconnect((*iter).end_pin_id, *start_node);
+    this->link_list_.erase(iter);
+}
+
+void NodeEditor::disconnectLinks(NodeBase* node)
+{
+    // Disconnect for all input pins
+    for (Pin& pin : node->input_pin_list_)
+    {
+        // For all connected nodes
+        for (NodeBase* connected_node : pin.connected_node_list_)
+        {
+            // Find target pin
+            auto pin_iter = std::find_if(
+                connected_node->output_pin_list_.begin(),
+                connected_node->output_pin_list_.end(),
+                [node, connected_node](Pin& pin)
+                {
+                    return (std::find_if(
+                        pin.connected_node_list_.begin(),
+                        pin.connected_node_list_.end(),
+                        [node](NodeBase* node_iter)
+                        {
+                            return node_iter->id_ == node->id_;
+                        }
+                    ) != pin.connected_node_list_.end());
+                }
+            );
+
+            connected_node->outputDisconnect((*pin_iter).id_, node);
+            node->inputDisconnect(pin.id_, connected_node);
+
+            // Erase deleted link
+            for (std::vector<Link>::const_iterator link = this->link_list_.begin(), end = this->link_list_.end(); link != end; ++link)
+            {
+                if ((*pin_iter).id_ == (*link).start_pin_id && pin.id_ == (*link).end_pin_id)
+                {
+                    this->link_list_.erase(link);
+                }
+            }
         }
     }
 
-    // Return error id (-1)
-    return -1;
-}
-
-void NodeEditor::assignAvailablePins(std::vector<InputPin>& pin_list)
-{
-    for (Pin& pin : pin_list)
+    // Disconnect for all output pins
+    for (Pin& pin : node->output_pin_list_)
     {
-        pin.id_ = this->pin_id_++;
+        // For all connected nodes
+        for (NodeBase* connected_node : pin.connected_node_list_)
+        {
+            // Find target pin
+            auto pin_iter = std::find_if(
+                connected_node->input_pin_list_.begin(),
+                connected_node->input_pin_list_.end(),
+                [node, connected_node](Pin& pin)
+                {
+                    return (std::find_if(
+                        pin.connected_node_list_.begin(),
+                        pin.connected_node_list_.end(),
+                        [node](NodeBase* node_iter)
+                        {
+                            return node_iter->id_ == node->id_;
+                        }
+                    ) != pin.connected_node_list_.end());
+                }
+            );
+
+            connected_node->inputDisconnect((*pin_iter).id_, node);
+            node->outputDisconnect(pin.id_, connected_node);
+
+            // Erase deleted link
+            for (std::vector<Link>::const_iterator link = this->link_list_.begin(), end = this->link_list_.end(); link != end; ++link)
+            {
+                if (pin.id_ == (*link).start_pin_id && (*pin_iter).id_ == (*link).end_pin_id)
+                {
+                    this->link_list_.erase(link);
+                }
+            }
+        }
     }
 }
 
-void NodeEditor::assignAvailablePins(std::vector<OutputPin>& pin_list)
+void NodeEditor::assignAvailablePins(std::vector<Pin>& pin_list)
 {
     for (Pin& pin : pin_list)
     {

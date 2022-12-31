@@ -15,17 +15,7 @@ struct Pin
 public:
     int32_t id_;
     const char* name_;
-};
 
-struct InputPin : public Pin
-{
-public:
-    class NodeBase* connected_node_;
-};
-
-struct OutputPin : public Pin
-{
-public:
     std::vector<class NodeBase*> connected_node_list_;
 };
 
@@ -107,7 +97,7 @@ public:
             return pin.id_ == pin_id;
         });
 
-        (*pin).connected_node_ = node;
+        (*pin).connected_node_list_.push_back(node);
 
         this->update();
     }
@@ -126,7 +116,7 @@ public:
     }
 
     // Disconnected event
-    void inputDisconnect(int32_t pin_id)
+    void inputDisconnect(int32_t pin_id, NodeBase* node)
     {
         auto pin = std::find_if(
             this->input_pin_list_.begin(),
@@ -136,7 +126,16 @@ public:
             return pin.id_ == pin_id;
         });
 
-        (*pin).connected_node_ = nullptr;
+        auto disconnect_iter = std::find_if(
+            (*pin).connected_node_list_.begin(),
+            (*pin).connected_node_list_.end(),
+            [node](NodeBase* iter)
+        {
+            return node == iter;
+        });
+
+        (*pin).connected_node_list_.erase(disconnect_iter);
+
         this->update();
     }
 
@@ -166,7 +165,7 @@ public:
     {
         this->updateData();
 
-        for (OutputPin& pin : this->output_pin_list_)
+        for (Pin& pin : this->output_pin_list_)
         {
             for (auto& node : pin.connected_node_list_)
             {
@@ -205,8 +204,8 @@ public:
     uint32_t output_pin_;
 
     // Input pin list
-    std::vector<InputPin> input_pin_list_;
+    std::vector<Pin> input_pin_list_;
 
     // Output pin list
-    std::vector<OutputPin> output_pin_list_;
+    std::vector<Pin> output_pin_list_;
 };
