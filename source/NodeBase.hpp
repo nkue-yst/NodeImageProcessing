@@ -140,7 +140,7 @@ public:
         this->update();
     }
 
-    void outputDisconnect(int32_t pin_id)
+    void outputDisconnect(int32_t pin_id, NodeBase* node)
     {
         auto pin = std::find_if(
             this->output_pin_list_.begin(),
@@ -150,8 +150,15 @@ public:
             return pin.id_ == pin_id;
         });
 
-        //(*pin).connected_node_ = nullptr;
-        (*pin).connected_node_list_.clear();
+        auto disconnect_iter = std::find_if(
+            (*pin).connected_node_list_.begin(),
+            (*pin).connected_node_list_.end(),
+            [node](NodeBase* iter)
+        {
+            return node == iter;
+        });
+
+        (*pin).connected_node_list_.erase(disconnect_iter);
     }
 
     // Update all child node

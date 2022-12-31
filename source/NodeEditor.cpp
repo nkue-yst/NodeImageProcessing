@@ -78,7 +78,7 @@ void NodeEditor::draw()
                         })!= node->input_pin_list_.end();
                     });
 
-                    (*start_node)->outputDisconnect(old_link->start_attr);
+                    (*start_node)->outputDisconnect(old_link->start_attr, *end_node);
                     (*end_node)->inputDisconnect(old_link->end_attr);
                     this->link_list_.erase(old_link);
                 }
@@ -165,7 +165,7 @@ void NodeEditor::draw()
                 }) != node->input_pin_list_.end();
             });
 
-            (*start_node)->outputDisconnect((*iter).start_attr);
+            (*start_node)->outputDisconnect((*iter).start_attr, *end_node);
             (*end_node)->inputDisconnect((*iter).end_attr);
             this->link_list_.erase(iter);
         }
