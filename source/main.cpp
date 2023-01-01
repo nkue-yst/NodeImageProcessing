@@ -37,8 +37,8 @@ int main(int argc, char **argv)
     int32_t win_height = 720;
     SDL_WindowFlags win_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
-    //SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
-    SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", 100, 1500, win_width, win_height, win_flags);
+    SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_width, win_height, win_flags);
+    //SDL_Window *win = SDL_CreateWindow("NodeImageProcessing", 100, 1500, win_width, win_height, win_flags);
 
     SDL_GLContext gl_context = SDL_GL_CreateContext(win);
     SDL_GL_MakeCurrent(win, gl_context);
@@ -192,6 +192,10 @@ int main(int argc, char **argv)
                     ImGuiFileDialog::Instance()->OpenDialog("SelectVideoDlgKey", "Select Video File", filters, ".");
                 }
 
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
                 // Exit button
                 if (ImGui::MenuItem("Exit"))
                 {
@@ -219,6 +223,10 @@ int main(int argc, char **argv)
                 {
                     NodeEditor::get().newVideoNode(NT_VideoSource);
                 }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
 
                 // Create new BinariztionNode
                 if (ImGui::MenuItem("Binarization"))
