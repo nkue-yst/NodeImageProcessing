@@ -8,6 +8,7 @@
 
 #include "imnodes.h"
 
+#include "Clock.hpp"
 #include "NodeStyle.hpp"
 
 struct Pin

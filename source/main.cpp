@@ -10,6 +10,7 @@
 #include "imnodes.h"
 #include "ImGuiFileDialog.h"
 
+#include "Clock.hpp"
 #include "ImageSourceNode.hpp"
 #include "NodeBase.hpp"
 #include "NodeEditor.hpp"
