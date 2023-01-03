@@ -243,6 +243,22 @@ int main(int argc, char **argv)
             ImGui::EndMenuBar();
         }
 
+        // Others
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Others"))
+            {
+                // Create new InformationNode
+                if (ImGui::MenuItem("Information"))
+                {
+                    NodeEditor::get().newImageNode(NT_InformationNode);
+                }
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
         //////////////////////////////////////
         ///// Draw dialog to select file /////
         //////////////////////////////////////

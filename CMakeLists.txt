@@ -62,6 +62,7 @@ set(NIP_SOURCES
     ${CMAKE_SOURCE_DIR}/source/GrayScalingNode.cpp
     ${CMAKE_SOURCE_DIR}/source/ImageNode.cpp
 	${CMAKE_SOURCE_DIR}/source/ImageSourceNode.cpp
+    ${CMAKE_SOURCE_DIR}/source/InformationNode.cpp
     ${CMAKE_SOURCE_DIR}/source/NodeEditor.cpp
     ${CMAKE_SOURCE_DIR}/source/VideoNode.cpp
     ${CMAKE_SOURCE_DIR}/source/VideoSourceNode.cpp

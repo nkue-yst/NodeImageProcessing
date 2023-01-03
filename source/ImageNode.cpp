@@ -7,6 +7,7 @@
 #include "EdgeDetectionNode.hpp"
 #include "GrayScalingNode.hpp"
 #include "ImageSourceNode.hpp"
+#include "InformationNode.hpp"
 
 ImageNode* ImageNode::create(NodeType type)
 {
@@ -23,6 +24,9 @@ ImageNode* ImageNode::create(NodeType type)
     
     case NT_GrayScaling:
         return new GrayScalingNode();
+
+    case NT_InformationNode:
+        return new InformationNode();
 
     default:
         return nullptr;

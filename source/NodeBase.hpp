@@ -37,6 +37,9 @@ typedef enum
     __AudioNode,
     // NT_AudioSource,
 
+    // ↓ Others ↓
+    NT_InformationNode,
+
     NT_UNDEFINED,
 } NodeType;
 
